@@ -1,4 +1,4 @@
-import { SETCOLLAPSED } from './actionTypes';
+import { SETCOLLAPSED } from './action-type';
 const defaultState = {
   collapsed: false
 }

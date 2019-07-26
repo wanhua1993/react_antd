@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Form, Icon, Input, Button } from 'antd';
 import './login.less';
 
-
 //  登录 路由组件
+@Form.create()
 class Login extends Component {
   handleSubmit = e => {
     e.preventDefault();
@@ -55,6 +55,7 @@ class Login extends Component {
   }
 }
 // 包装 Form 组件 生成新的组件
-const LoginWrapper = Form.create()(Login);
+// const LoginWrapper = Form.create()(Login);
 
-export default LoginWrapper
+// export default LoginWrapper
+export default Login

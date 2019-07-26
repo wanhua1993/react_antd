@@ -3,9 +3,9 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Layout } from 'antd';
 import '../index.less';
-import LeftNav from '../../components/left-nav/left-nav'; // 左边栏 
-import Header from '../../components/header/header'; // 头部
-import Crumb from '../../components/breadCrumb/breadCrumb'; // 面包屑
+import LeftNav from '@/components/left-nav/left-nav'; // 左边栏 
+import Header from '@/components/header/header'; // 头部
+import Crumb from '@/components/breadCrumb/breadCrumb'; // 面包屑
 import Home from '../home/home'; // 首页
 import Center from '../account/center'; // 个人中心
 import Settings from '../account/settings'; // 个人设置
@@ -18,6 +18,8 @@ import Draft from '../editor/draft'; // 富文本编辑器
 import Markdown from '../editor/markdown'; // markdown 编辑器
 import Cloud from '../version/cloud'; // 历史版本
 import Export from '../version/export'; // 版本发布
+import NotFound from '../404'; // 404 页面
+import BadServer from '../500'; // 500 页面
 import ArticleEdit from '../project/articleEdit'; // 
 
 const { Content, Sider } = Layout;
@@ -39,6 +41,8 @@ class Admin extends Component {
             <Crumb />
             <Switch>
               <Route path='/home' component={Home}></Route>
+              <Route path='/404' component={NotFound}></Route>
+              <Route path='/500' component={BadServer}></Route>
               <Route path='/account/center' component={Center}></Route>
               <Route path='/account/settings' component={Settings}></Route>
               <Route path='/system/user' component={User}></Route>
@@ -51,7 +55,7 @@ class Admin extends Component {
               <Route path='/edit/markdown' component={Markdown}></Route>
               <Route path='/version/cloud' component={Cloud}></Route>
               <Route path='/version/export' component={Export}></Route>
-              <Redirect to='/home'></Redirect>
+              <Redirect to='/404'></Redirect>
             </Switch>
           </Content>
           {/* <Footer style={{ textAlign: 'center', color: '#999'}}>爱吃番茄柿  后台管理系统 @2019/7/23</Footer> */}
@@ -63,7 +67,7 @@ class Admin extends Component {
 
 function mapStateToProps(state) {
   return {
-    collapsed: state.collapsed
+    collapsed: state.default.collapsed
   }
 }
 export default Admin = connect(mapStateToProps)(Admin);

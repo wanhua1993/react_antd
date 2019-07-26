@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import logo from '../../assets/images/logo.png';
 import { Icon, Menu, Dropdown, message } from 'antd';
-import { SETCOLLAPSED } from '../../store/actionTypes';
+import { SETCOLLAPSED } from '@/store/home/action-type';
 import './index.less';
 
 const onClick = ({ key }) => {
@@ -17,6 +17,7 @@ const menu = (
   </Menu>
 );
 
+@connect(mapStateToProps, mapDispatchToProps)
 class Header extends Component {
   state = {
     collapsed: false,
@@ -47,7 +48,7 @@ class Header extends Component {
 }
 function mapStateToProps(state) {
   return {
-    collapsed: state.collapsed
+    collapsed: state.default.collapsed
   }
 }
 function mapDispatchToProps(dispatch) {
@@ -58,5 +59,6 @@ function mapDispatchToProps(dispatch) {
     }),
   }
 }
-export default Header = connect(mapStateToProps, mapDispatchToProps)(Header);
+// export default Header = connect(mapStateToProps, mapDispatchToProps)(Header);
+export default Header;
 

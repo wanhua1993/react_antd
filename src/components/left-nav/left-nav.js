@@ -7,6 +7,7 @@ import menuList from '../../config/menuConfig';
 import { connect } from 'react-redux';
 const SubMenu = Menu.SubMenu;
 
+@connect(mapStateToProps)
 class LeftNav extends Component {
   state = {
     collapsed: false,
@@ -130,9 +131,10 @@ class LeftNav extends Component {
 }
 function mapStateToProps(state) {
   return {
-    collapsed: state.collapsed
+    collapsed: state.default.collapsed
   }
 }
 // 包装非路由组件 返回一个新的组件 history location match
 // export default withRouter(LeftNav);
-export default LeftNav = connect(mapStateToProps)(withRouter(LeftNav));
+// export default LeftNav = connect(mapStateToProps)(withRouter(LeftNav));
+export default withRouter(LeftNav);
