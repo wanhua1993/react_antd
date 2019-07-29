@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { Form, Input, Button, Upload, message } from 'antd';
-import { fetchProvince } from '@/api/geographic';
 import './basic.less';
 const { TextArea } = Input;
 const props = {
@@ -34,9 +33,7 @@ const AvatarView = ({ avatar }) => (
 class Basic extends Component {
 
   componentDidMount() {
-    fetchProvince().then(res => {
-      console.log(res);
-    })
+    
   }
   render() {
     const formItemLayout = {

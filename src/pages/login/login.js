@@ -1,18 +1,47 @@
 import React, { Component } from 'react';
 import { Form, Icon, Input, Button } from 'antd';
+import { loginIn } from '@/api/login';
+import { connect } from 'react-redux';
+import { SETTOKEN } from '@/store/home/action-type';
+import { setCookie, setStorage } from '@/utils';
 import './login.less';
 
 //  登录 路由组件
+function mapStateToProps(state) {
+  return {
+    collapsed: state.default.collapsed
+  }
+}
+function mapDispatchToProps(dispatch) {
+  return {
+    // 设置token
+    setToken: (token) => dispatch({
+      type: SETTOKEN,
+      token
+    })
+  }
+}
+@connect(mapStateToProps, mapDispatchToProps)
 @Form.create()
 class Login extends Component {
+  
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log(values);
+        loginIn(values).then(res => {
+          let { code, token, value } = res;
+          if(code === '200') {
+            this.props.setToken(token);
+            this.props.history.push('/home');
+            setCookie('token', token);
+            setStorage('user', value);
+          }
+        })
       }
     });
   };
+
   render() {
     // form 对象
     const { getFieldDecorator } = this.props.form;
@@ -54,8 +83,4 @@ class Login extends Component {
     )
   }
 }
-// 包装 Form 组件 生成新的组件
-// const LoginWrapper = Form.create()(Login);
-
-// export default LoginWrapper
 export default Login

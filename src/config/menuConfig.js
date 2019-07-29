@@ -22,6 +22,35 @@ const menuConfig = [
     ]
   },
   {
+    title: '用户管理',
+    icon: 'user',
+    key: '/members',
+    children: [
+      {
+        title: '会员管理',
+        icon: 'meh',
+        key: '/members/list'
+      },
+      {
+        title: '会员等级',
+        icon: 'cluster',
+        key: '/members/level'
+      }
+    ]
+  },
+  {
+    title: '订单管理',
+    icon: 'dollar',
+    key: '/order',
+    children: [
+      {
+        title: '订单列表',
+        icon: 'menu',
+        key: '/order/list'
+      }
+    ]
+  },
+  {
     title: '个人管理',
     icon: 'team',
     key: '/account',
@@ -69,6 +98,11 @@ const menuConfig = [
         title: '版本发布',
         icon: 'export',
         key: '/version/export',
+      },
+      {
+        title: 'API管理',
+        icon: 'database',
+        key: '/version/api'
       }
     ]
   },

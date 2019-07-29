@@ -1,71 +1,101 @@
 import React, { Component } from 'react';
-import { Table, Divider } from 'antd';
+import { Table, Divider, Button, Modal } from 'antd';
+import { getUserList } from '@/api/login';
+import { paginationConfig } from '@/config/paginationConfig';
 
+const { confirm } = Modal;
 const columns = [
-  { title: 'Name', dataIndex: 'name', key: 'name' },
-  { title: 'Age', dataIndex: 'age', key: 'age' },
-  { title: 'Address', dataIndex: 'address', key: 'address' },
+  { title: '用户名', dataIndex: 'username', key: 'username' },
+  { title: '创建时间', dataIndex: 'createdAt', key: 'createdAt' },
+  { title: '邮箱', dataIndex: 'email', key: 'email' },
+  { title: '手机号', dataIndex: 'phone', key: 'phone' },
   {
-    title: 'Action',
+    title: '操作',
     dataIndex: '',
     key: 'x',
     render: (text, record) =>
       <span>
-        <a href="##">查看</a>
+        <Button
+          type="primary"
+          onClick={() => handleLookAt(record)}
+        >
+          查看
+          </Button>
         <Divider type="vertical" />
-        <a href="##">详情</a>
+        <Button
+          type="primary"
+          onClick={() => handleUpdateData(record)}
+        >
+          修改
+          </Button>
         <Divider type="vertical" />
-        <a href="##">删除 </a>
+        <Button
+          type="danger"
+          onClick={() => handleDeleteData(record)}
+        >
+          删除
+          </Button>
       </span>
     ,
   },
 ];
+function handleLookAt() {
+  // 查看
+}
+function handleUpdateData() {
+  // 修改
+}
+function handleDeleteData() {
+  // 删除
+  confirm({
+    title: '提示',
+    content: '确认要删除该文章吗？',
+    okText: '确认',
+    okType: '警告',
+    cancelText: '取消',
+    onOk() {
+      console.log('OK');
+    },
+    onCancel() {
+      console.log('Cancel');
+    },
+  });
+}
+function onChange(page, pageSize) {
+  console.log(page, pageSize);
+}
 
-const data = [
-  {
-    key: 1,
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.',
-  },
-  {
-    key: 2,
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    description: 'My name is Jim Green, I am 42 years old, living in London No. 1 Lake Park.',
-  },
-  {
-    key: 3,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    description: 'My name is Joe Black, I am 32 years old, living in Sidney No. 1 Lake Park.',
-  },
-];
-function showTotal(total) {
-  return `总数 ${total} 条`;
+function onShowSizeChange(current, size) {
+  console.log(current);
+  console.log(size);
 }
-const paginationConfig = {
-  size: 'large', 
-  total: 50, 
-  showSizeChanger: true, 
-  showQuickJumper: {goButton: '页'}, 
-  showTotal: showTotal
-}
-export default class User extends Component {
+
+class User extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: []
+    }
+  }
+  componentWillMount() {
+    getUserList().then(res => {
+      this.setState({
+        data: res
+      });
+    });
+  }
   render() {
     return (
       <div className='content user-content'>
         <Table
           columns={columns}
-          // expandedRowRender={record => <p style={{ margin: 0 }}>{record.description}</p>}
-          dataSource={data}
-          pagination={paginationConfig}
+          dataSource={this.state.data}
+          pagination={paginationConfig(this.state.data.length, onChange, onShowSizeChange)}
         />
       </div>
     )
   }
 }
+export default User;
+
 
