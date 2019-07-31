@@ -9,7 +9,6 @@ export default class Settings extends Component {
       <div className='content account-settings'>
         <div className='settings-left'>
           <Menu
-            // style={{ width: 256 }}
             defaultSelectedKeys={['1']}
             defaultOpenKeys={['sub1']}
             mode='inline'

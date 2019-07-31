@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Divider, Button, Select, Card, Modal } from 'antd';
+import { Table, Divider, Button, Select, Modal } from 'antd';
 import './index.less';
 const { Option } = Select;
 const { confirm } = Modal;
@@ -122,7 +122,7 @@ export default class Article extends Component {
   }
   render() {
     return (
-      <Card title="文章列表">
+      <div className='content'>
         <div className='article-edit'>
           <Select placeholder='请选择编辑器' style={{ width: 200 }} size='large' onChange={this.handleChangeEditor}>
             <Option value="0">富文本编辑器</Option>
@@ -138,7 +138,7 @@ export default class Article extends Component {
           dataSource={data}
           pagination={paginationConfig}
         />
-      </Card>
+      </div>
     )
   }
 }

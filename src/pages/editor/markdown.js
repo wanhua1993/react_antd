@@ -5,9 +5,11 @@ import './index.less';
 export default class Markdown extends Component {
   render() {
     return (
-      <Card title="Markdown">
-        <MarkdownEditor />
-      </Card>
+      <div className='content'>
+        <Card title="Markdown">
+          <MarkdownEditor />
+        </Card>
+      </div>
     )
   }
 }

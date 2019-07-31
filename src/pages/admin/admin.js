@@ -5,7 +5,6 @@ import { Layout } from 'antd';
 import '../index.less';
 import LeftNav from '@/components/left-nav/left-nav'; // 左边栏 
 import Header from '@/components/header/header'; // 头部
-import Crumb from '@/components/breadCrumb/breadCrumb'; // 面包屑
 import Home from '../home/home'; // 首页
 import Center from '../account/center'; // 个人中心
 import Settings from '../account/settings'; // 个人设置
@@ -21,6 +20,7 @@ import Export from '../version/export'; // 版本发布
 import NotFound from '../404'; // 404 页面
 import BadServer from '../500'; // 500 页面
 import ArticleEdit from '../project/articleEdit'; // 
+import AddProject from '../project/addProject'; // 新增项目
 
 const { Content, Sider } = Layout;
 
@@ -38,7 +38,6 @@ class Admin extends Component {
         <Layout>
           <Header />
           <Content style={{ background: '#f0f0f0', padding: '0 10px'}}>
-            <Crumb />
             <Switch>
               <Route path='/home' component={Home}></Route>
               <Route path='/404' component={NotFound}></Route>
@@ -55,6 +54,7 @@ class Admin extends Component {
               <Route path='/edit/markdown' component={Markdown}></Route>
               <Route path='/version/cloud' component={Cloud}></Route>
               <Route path='/version/export' component={Export}></Route>
+              <Route path='/project/addProject' component={AddProject}></Route>
               <Redirect to='/404'></Redirect>
             </Switch>
           </Content>

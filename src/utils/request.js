@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { getCookie } from './index';
 import { message } from 'antd';
+
 const service = axios.create({
   timeout: 3000
 });
@@ -23,6 +24,7 @@ service.interceptors.response.use(
     // 登录失效
     if (res.code === 403) {
       message.error(res.msg);
+      window.location = '/login';
       return false;
     }
     return res;

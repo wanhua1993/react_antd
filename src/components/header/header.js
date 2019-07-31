@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Crumb from '@/components/breadCrumb/breadCrumb'; // 面包屑
 import logo from '../../assets/images/logo.png';
 import { Icon, Menu, Dropdown, message } from 'antd';
 import { SETCOLLAPSED } from '@/store/home/action-type';
@@ -31,6 +32,7 @@ class Header extends Component {
           type={collapsed ? 'menu-unfold' : 'menu-fold'}
           onClick={this.setCollapse.bind(this, setCollapsed, collapsed)}
         />
+        <Crumb></Crumb>
         <Dropdown overlay={menu} className='header-hover' trigger={['click']}>
           <a className="ant-dropdown-link" href='void'>
             爱吃番茄柿 <Icon type="down" />
