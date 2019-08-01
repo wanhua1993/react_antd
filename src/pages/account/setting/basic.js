@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Form, Input, Button, Upload, message } from 'antd';
 import { getCookie } from '@/utils';
 import './basic.less';
-const { TextArea } = Input;
 
 @Form.create()
 class Basic extends Component {
@@ -55,10 +54,20 @@ class Basic extends Component {
       wrapperCol: { span: 8 },
     };
     const { getFieldDecorator } = this.props.form;
+    const { b_key } = this.props;
     return (
-      <div>
+      <div style={{display: b_key === '1' ? 'block' : 'none'}}>
         <p className='basic_title'>基础设置</p>
         <Form layout='vertical' {...formItemLayout} style={{ position: 'relative' }} onSubmit={this.handleSubmit}>
+        <Form.Item label="昵称">
+            {
+              getFieldDecorator('username', {
+                rules: [{required: true, message: '请输入昵称'}]
+              })(
+                <Input placeholder="请输入昵称" size='large' />
+              )
+            }
+          </Form.Item>
           <Form.Item label="邮箱">
             {getFieldDecorator('email', {
               rules: [{ required: true, message: '请输入邮箱!' }],
@@ -66,39 +75,21 @@ class Basic extends Component {
               <Input placeholder="请输入邮箱" size='large' />,
             )}
           </Form.Item>
-          <Form.Item label="昵称">
-            {
-              getFieldDecorator('username', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入昵称'
-                  }
-                ]
-              })(
-                <Input placeholder="请输入昵称" size='large' />
-              )
-            }
-          </Form.Item>
-          <Form.Item label='个人简介'>
-            <TextArea
-              placeholder="个人简介"
-              autosize={{ minRows: 5, maxRows: 6 }}
-              value={this.state.desc}
-              onChange={this.handleChangeDesc.bind(this)}
-            />
-          </Form.Item>
           <Form.Item label='联系电话'>
             {
               getFieldDecorator('phone', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入联系电话'
-                  }
-                ]
+                rules: [{required: true, message: '请输入联系电话'}]
               })(
                 <Input placeholder="请输入手机号" size='large' />
+              )
+            }
+          </Form.Item>
+          <Form.Item label='居住地址'>
+            {
+              getFieldDecorator('address', {
+                rules: [{required: true, message: '请输入居住地址'}]
+              })(
+                <Input placeholder="请输入居住地址" size='large' />
               )
             }
           </Form.Item>

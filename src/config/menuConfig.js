@@ -13,11 +13,6 @@ const menuConfig = [
         title: '文章列表',
         icon: 'file-text',
         key: '/project/articleList',
-      },
-      {
-        title: '项目列表',
-        icon: 'exception',
-        key: '/project/projectList',
       }
     ]
   },
@@ -64,6 +59,16 @@ const menuConfig = [
         title: '个人设置',
         icon: 'setting',
         key: '/account/settings',
+      },
+      {
+        title: '工作经历',
+        icon: 'number',
+        key: '/account/work'
+      },
+      {
+        title: '项目经验',
+        icon: 'exception',
+        key: '/account/project'
       }
     ]
   },

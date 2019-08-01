@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Form, Input, Button, Checkbox, DatePicker, Icon, message } from 'antd';
 import { addProject, getOneProject, updateOneProject } from '@/api/login';
 import { getStorage } from '@/utils';
+import Avatar from './setting/upload';
 import moment from 'moment';
 
 const { TextArea } = Input;
@@ -10,12 +11,10 @@ const { RangePicker } = DatePicker;
 class AddProject extends Component {
   state = {
     type: [], // 项目类型
-    title: '', // 项目名称
-    proDesc: '', // 项目简介
     onlineUrl: '', // 上线地址
     proUrl: '', // 原型地址
-    startTime: '', // 开始时间
-    endTime: '', // 结束时间
+    startTime: new Date(), // 开始时间
+    endTime: new Date(), // 结束时间
     resDesc: [],
     _id: ''
   }
@@ -29,12 +28,7 @@ class AddProject extends Component {
       this.getProject(_id);
     }
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.state._id !== nextState.data) {
-      return true;
-    }
-    return false;
-  }
+
   getProject(_id) {
     getOneProject({ _id }).then(res => {
       const value = res[0];
@@ -68,7 +62,7 @@ class AddProject extends Component {
           updateOneProject(data).then(res => {
             if (res.code === '200') {
               message.success('修改成功！');
-              this.props.history.push('/project/projectList');
+              this.props.history.push('/account/project');
             } else {
               message.erroe('修改失败！');
             }
@@ -78,7 +72,7 @@ class AddProject extends Component {
           addProject(data).then(res => {
             if (res.code === '200') {
               message.success('添加成功！');
-              this.props.history.push('/project/projectList');
+              this.props.history.push('/account/project');
             } else {
               message.success('添加失败！');
             }
@@ -89,6 +83,16 @@ class AddProject extends Component {
   };
 
   handleSelectType(type) {
+    if(!type.includes(1)) {
+      this.setState({
+        onlineUrl: ''
+      });
+    }
+    if(!type.includes(2)) {
+      this.setState({
+        proUrl: ''
+      });
+    }
     // 选择 类型
     this.setState({
       type
@@ -172,8 +176,9 @@ class AddProject extends Component {
     ));
   }
   render() {
-    const { getFieldDecorator } = this.props.form;
-    const { type, title, proDesc, proUrl, onlineUrl, startTime, endTime } = this.state;
+    const { getFieldDecorator, getFieldsValue } = this.props.form;
+    const { type, proUrl, onlineUrl, startTime, endTime } = this.state;
+    const { title, proDesc } = getFieldsValue();
     const plainOptions = [
       { label: '上线', value: 1 },
       { label: '原型', value: 2 },
@@ -212,6 +217,9 @@ class AddProject extends Component {
             </Form.Item>
             <Form.Item label="起止时间">
               <RangePicker onChange={this.handleChangeTime.bind(this)} size='large' value={[moment(startTime),moment(endTime)]}/>
+            </Form.Item>
+            <Form.Item label='背景图片'>
+              <Avatar></Avatar>
             </Form.Item>
             {this.formItemFn()}
             <Form.Item {...formItemLayoutWithOutLabel}>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Table, Divider, Button, Modal, } from 'antd';
-import { projectList } from '@/api/login';
+import { Table, Divider, Button, Modal, message, } from 'antd';
+import { workList, deleteOneWork } from '@/api/login';
 import { paginationConfig } from '@/config/paginationConfig';
 import { getStorage } from '@/utils';
 import { getDate_0 } from '@/utils/tools'
@@ -8,7 +8,7 @@ import './index.less';
 
 const { confirm } = Modal;
 
-class Project extends Component {
+class Work extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,8 +18,8 @@ class Project extends Component {
     }
   }
   columns = [
-    { title: '项目名称', dataIndex: 'title', key: 'title' },
-    { title: '上线地址', dataIndex: 'onlineUrl', key: 'onlineUrl' },
+    { title: '公司名称', dataIndex: 'company', key: 'company' },
+    { title: '职位', dataIndex: 'position', key: 'position' },
     { title: '起止时间', dataIndex: 'time', key: 'time' },
     { title: '创建时间', dataIndex: 'createdAt', key: 'createdAt' },
     {
@@ -48,18 +48,29 @@ class Project extends Component {
   // 修改
   handleUpdateData(record) {
     const { _id } = record;
-    this.props.history.push('/project/addProject?_id=' + _id);
+    this.props.history.push('/account/addWork?_id=' + _id);
   }
-  handleDeleteData() {
+  handleDeleteData(record) {
     // 删除
     confirm({
       title: '提示',
-      content: '确认要删除该文章吗？',
+      content: '确认要删除该工作吗？',
       okText: '确认',
       okType: '警告',
       cancelText: '取消',
-      onOk() {
-        console.log('OK');
+      onOk: () => {
+        const { _id } = record;
+        let data = {
+          _id
+        }
+        deleteOneWork(data).then(res => {
+          if(res.code === '200') {
+            message.success('删除成功！');
+            this.load_work_list();
+          } else {
+            message.error('删除失败！');
+          }
+        });
       },
       onCancel() {
         console.log('Cancel');
@@ -67,16 +78,16 @@ class Project extends Component {
     });
   }
   componentWillMount() {
-    this.load_project_list();
+    this.load_work_list();
   }
-  load_project_list() {
+  load_work_list() {
     const { _id } = getStorage('user');
     let data = {
       uId: _id,
       pageNum: this.state.pageNum,
       pageSize: this.state.pageSize
     }
-    projectList(data).then(res => {
+    workList(data).then(res => {
       res.data.map((item, index) => {
         item.time = item.startTime + ' 至 ' + item.endTime;
         item.createdAt = getDate_0(item.createdAt, 'year');
@@ -93,7 +104,7 @@ class Project extends Component {
       pageNum,
       pageSize
     }, () => {
-      this.load_project_list();
+      this.load_work_list();
     });
   }
   onChange(pageNum, pageSize) {
@@ -101,7 +112,7 @@ class Project extends Component {
       pageNum,
       pageSize
     }, () => {
-      this.load_project_list();
+      this.load_work_list();
     });
   }
   render() {
@@ -109,7 +120,7 @@ class Project extends Component {
     return (
       <div className='content user-content'>
         <div className='user-content-header'>
-          <Button type='primary' size='large' onClick={() => history.push('/project/addProject')}>新增</Button>
+          <Button type='primary' size='large' onClick={() => history.push('/account/addWork')}>新增</Button>
         </div>
         <Table
           columns={this.columns}
@@ -120,6 +131,6 @@ class Project extends Component {
     )
   }
 }
-export default Project;
+export default Work;
 
 

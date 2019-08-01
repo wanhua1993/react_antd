@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import { Upload, Icon, message } from 'antd';
-
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
+import { getCookie } from '@/utils';
 
 function beforeUpload(file) {
   const isLt2M = file.size / 1024 / 1024 < 5;
@@ -18,21 +13,24 @@ function beforeUpload(file) {
 class Avatar extends Component {
   state = {
     loading: false,
+    imageUrl: ''
   };
 
-  handleChange = info => {
-    if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
-      return;
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl =>
-        this.setState({
-          imageUrl,
-          loading: false,
-        }),
-      );
+  uploadAvatar = info => {
+    let res = info.fileList[info.fileList.length - 1].response;
+    if (res) {
+      if (res.code === '200') {
+          this.setState({
+            imageUrl: res.url
+          });
+      }
+      if (info.file.status !== 'uploading') {
+      }
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} 上传成功`);
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} file 上传失败.`);
+      }
     }
   };
 
@@ -40,19 +38,22 @@ class Avatar extends Component {
     const uploadButton = (
       <div>
         <Icon type={this.state.loading ? 'loading' : 'plus'} />
-        <div className="ant-upload-text">Upload</div>
+        <div className="ant-upload-text">上传</div>
       </div>
     );
     const { imageUrl } = this.state;
     return (
       <Upload
-        name="avatar"
         listType="picture-card"
         className="avatar-uploader"
         showUploadList={false}
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
         beforeUpload={beforeUpload}
-        onChange={this.handleChange}
+        name='file'
+        action={'http://localhost:8000/users/upload_avatar'}
+        headers={
+          { token: getCookie('token') }
+        }
+        onChange={this.uploadAvatar}
       >
         {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
       </Upload>
