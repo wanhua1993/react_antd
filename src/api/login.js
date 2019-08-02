@@ -25,6 +25,22 @@ export function newUser(data) {
     data
   });
 }
+// 修改某一个用户信息
+export function updateUser(data) {
+  return request({
+    url: `${api}/users/update_user`,
+    method: 'POST',
+    data
+  });
+}
+// 获取某一个用户信息
+export function getOneUserInfo(data) {
+  return request({
+    url: `${api}/users/load_one_user`,
+    method: 'POST',
+    data
+  });
+}
 // 新建项目
 export function addProject(data) {
   return request({

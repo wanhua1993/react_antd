@@ -16,6 +16,7 @@ class AddProject extends Component {
     startTime: new Date(), // 开始时间
     endTime: new Date(), // 结束时间
     resDesc: [],
+    imageUrl: '',
     _id: ''
   }
 
@@ -38,7 +39,8 @@ class AddProject extends Component {
         proUrl: value.proUrl,
         startTime: value.startTime,
         endTime: value.endTime,
-        resDesc: value.resDesc
+        resDesc: value.resDesc,
+        imageUrl: value.imageUrl
       });
       setTimeout(() => {
         this.props.form.setFieldsValue({
@@ -175,9 +177,15 @@ class AddProject extends Component {
       </Form.Item>
     ));
   }
+  handleChangeAvatar(imageUrl) {
+    console.log(imageUrl);
+    this.setState({
+      imageUrl
+    });
+  }
   render() {
     const { getFieldDecorator, getFieldsValue } = this.props.form;
-    const { type, proUrl, onlineUrl, startTime, endTime } = this.state;
+    const { type, proUrl, onlineUrl, startTime, endTime, imageUrl } = this.state;
     const { title, proDesc } = getFieldsValue();
     const plainOptions = [
       { label: '上线', value: 1 },
@@ -219,7 +227,7 @@ class AddProject extends Component {
               <RangePicker onChange={this.handleChangeTime.bind(this)} size='large' value={[moment(startTime),moment(endTime)]}/>
             </Form.Item>
             <Form.Item label='背景图片'>
-              <Avatar></Avatar>
+              <Avatar changeAvatar={(avatar) => {this.handleChangeAvatar(avatar)}} avatar={imageUrl}></Avatar>
             </Form.Item>
             {this.formItemFn()}
             <Form.Item {...formItemLayoutWithOutLabel}>

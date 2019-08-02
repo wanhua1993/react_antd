@@ -23,6 +23,8 @@ class Avatar extends Component {
           this.setState({
             imageUrl: res.url
           });
+          // 传回到父组件
+          this.props.changeAvatar(res.url);
       }
       if (info.file.status !== 'uploading') {
       }
@@ -41,7 +43,11 @@ class Avatar extends Component {
         <div className="ant-upload-text">上传</div>
       </div>
     );
-    const { imageUrl } = this.state;
+    let { imageUrl } = this.state;
+    let { avatar } = this.props;
+    if(avatar) {
+      imageUrl = avatar;
+    }
     return (
       <Upload
         listType="picture-card"

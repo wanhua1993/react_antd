@@ -14,7 +14,6 @@ class Work extends Component {
   componentWillMount() {
     const { _id } = getStorage('user');
     workListAll({ uId: _id }).then(res => {
-      console.log(res);
       this.setState({
         data: res
       });
@@ -25,8 +24,8 @@ class Work extends Component {
       padding: '10px 20px'
     }
     return data.map((item, index) => (
-      <div style={{ margin: '10px 0' }}>
-        <Card key={item._id} title={item.company + ' / ' + item.position} extra={item.startTime + ' 至 ' + item.endTime} bodyStyle={styleB}>
+      <div style={{ margin: '10px 0' }} key={item._id + '_' + index}>
+        <Card title={item.company + ' / ' + item.position} extra={item.startTime + ' 至 ' + item.endTime} bodyStyle={styleB}>
           {
             item.workDesc.map((val, ind) => (
               <p key={val} className='account-work-p'>({ind + 1}) {val}</p>

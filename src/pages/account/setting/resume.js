@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Upload, message, Result, Icon } from 'antd';
-import { getCookie } from '@/utils';
-import './basic.less';
+import { Form, Input, Button, Icon, message } from 'antd';
+import { getStorage } from '@/utils';
+import { updateUser } from '@/api/login';
 import './basic.less';
 
 const { TextArea } = Input;
@@ -10,23 +10,49 @@ class Resume extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      desc: '',
-      evaluation: []
+      evaluation: [],
+      type: true
     }
+  }
+
+  shouldComponentUpdate(newProps, newState) {
+    const { evaluation } = newProps.r_user;
+    if (evaluation.length || newProps.r_key) {
+      if (this.state.type) {
+        this.setState({
+          evaluation
+        }, () => {
+          this.setState({
+            type: false
+          })
+        });
+      }
+      return true
+    }
+    return false
   }
 
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        let data = { ...values, ...this.state }
-        console.log(data);
+        const { _id } = getStorage('user');
+        let data = { ...values, ...this.state };
+        data._id = _id;
+        data.type = 2;
+        updateUser(data).then(res => {
+          if (res.ok === 1) {
+            message.success('修改成功！');
+          }
+        });
       }
     });
   };
-  handleChangeDesc(e) {
+  handleChangeEvalDesc(index, e) {
+    const { evaluation } = this.state;
+    const { value } = e.target;
     this.setState({
-      desc: e.target.value
+      evaluation: evaluation.map((item, _index) => _index === index ? value : item)
     });
   }
   remove = index => {
@@ -44,13 +70,7 @@ class Resume extends Component {
       evaluation
     });
   };
-  handleChangeEvalDesc(index, e) {
-    const { evaluation } = this.state;
-    const { value } = e.target;
-    this.setState({
-      evaluation: evaluation.map((item, _index) => _index === index ? value : item)
-    });
-  }
+
   formItemFn() {
     const formItemLayout = {
       wrapperCol: {
@@ -91,7 +111,7 @@ class Resume extends Component {
       },
     };
     const { getFieldDecorator } = this.props.form;
-    const { r_key } = this.props;
+    const { r_key, r_user } = this.props;
     return (
       <div style={{ display: r_key === '2' ? 'block' : 'none' }}>
         <p className='basic_title'>个人简历</p>
@@ -99,7 +119,8 @@ class Resume extends Component {
           <Form.Item label="职位">
             {
               getFieldDecorator('position', {
-                rules: [{ required: true, message: '请输入职位' }]
+                rules: [{ required: true, message: '请输入职位' }],
+                initialValue: r_user.position
               })(
                 <Input placeholder="请输入职位" size='large' />
               )
@@ -108,6 +129,7 @@ class Resume extends Component {
           <Form.Item label="工作经验">
             {getFieldDecorator('year', {
               rules: [{ required: true, message: '请输入工作经验!' }],
+              initialValue: r_user.year
             })(
               <Input placeholder="请输入工作经验" size='large' />,
             )}
@@ -115,7 +137,8 @@ class Resume extends Component {
           <Form.Item label='专业技能'>
             {
               getFieldDecorator('skills', {
-                rules: [{ required: true, message: '请输入专业技能' }]
+                rules: [{ required: true, message: '请输入专业技能' }],
+                initialValue: r_user.skills
               })(
                 <TextArea placeholder="请输入专业技能" rows={4} />
               )

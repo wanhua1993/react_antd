@@ -1,30 +1,50 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Crumb from '@/components/breadCrumb/breadCrumb'; // 面包屑
-import logo from '../../assets/images/logo.png';
-import { Icon, Menu, Dropdown, message } from 'antd';
+import { Icon, Menu, Dropdown } from 'antd';
 import { SETCOLLAPSED } from '@/store/home/action-type';
+import { getStorage } from '@/utils';
+import { withRouter } from 'react-router-dom'
 import './index.less';
-
-const onClick = ({ key }) => {
-  message.info(`Click on item ${key}`);
-};
-const menu = (
-  <Menu onClick={onClick}>
-    <Menu.Item key="1" className='header-menu-item'><Icon type="user" />个人中心</Menu.Item>
-    <Menu.Item key="2" className='header-menu-item'><Icon type="setting" />个人设置</Menu.Item>
-    <Menu.Divider />
-    <Menu.Item key="3" className='header-menu-item'><Icon type="poweroff" />退出登录</Menu.Item>
-  </Menu>
-);
 
 @connect(mapStateToProps, mapDispatchToProps)
 class Header extends Component {
   state = {
     collapsed: false,
+    user: {}
   };
+  componentWillMount() {
+    const user = getStorage('user');
+    this.setState({
+      user
+    });
+  }
+  onClick = ({ key }) => {
+    const { history } = this.props;
+    if (key === '1') {
+      history.push('/account/center');
+    }
+    if (key === '2') {
+      history.push('/account/settings');
+    }
+    if (key === '3') {
+      history.push('/login');
+      // 需要将 token storage 中数据清除
+    }
+  }
+  menuList() {
+    return (
+      <Menu onClick={this.onClick.bind(this)}>
+        <Menu.Item key="1" className='header-menu-item'><Icon type="user" />个人中心</Menu.Item>
+        <Menu.Item key="2" className='header-menu-item'><Icon type="setting" />个人设置</Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key="3" className='header-menu-item'><Icon type="poweroff" />退出登录</Menu.Item>
+      </Menu>
+    );
+  }
   render() {
     const { setCollapsed, collapsed } = this.props;
+    const { user } = this.state;
     return (
       <div className='header'>
         <Icon
@@ -33,13 +53,13 @@ class Header extends Component {
           onClick={this.setCollapse.bind(this, setCollapsed, collapsed)}
         />
         <Crumb></Crumb>
-        <Dropdown overlay={menu} className='header-hover' trigger={['click']}>
+        <Dropdown overlay={this.menuList()} className='header-hover' trigger={['click']}>
           <a className="ant-dropdown-link" href='void'>
-            爱吃番茄柿 <Icon type="down" />
+            {user.username} <Icon type="down" />
           </a>
         </Dropdown>
         <div className='header-img'>
-          <img src={logo} alt="logo" />
+          <img src={user.avatar} alt="logo" />
         </div>
       </div>
     )
@@ -61,6 +81,5 @@ function mapDispatchToProps(dispatch) {
     }),
   }
 }
-// export default Header = connect(mapStateToProps, mapDispatchToProps)(Header);
-export default Header;
+export default withRouter(Header);
 

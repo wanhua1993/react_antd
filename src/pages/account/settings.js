@@ -4,14 +4,25 @@ import Basic from './setting/basic';
 import Resume from './setting/resume';
 import Work from './setting/work';
 import Project from './setting/project';
+import { getOneUserInfo } from '@/api/login';
+import { getStorage } from '@/utils';
 import './index.less';
 
 export default class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      key: '3'
+      key: '1',
+      user: {}
     }
+  }
+  componentWillMount() {
+    const { _id } = getStorage('user');
+    getOneUserInfo({ _id }).then(res => {
+      this.setState({
+        user: res[0]
+      });
+    });
   }
   onSelectMenu(value) {
     const { key } = value;
@@ -20,7 +31,7 @@ export default class Settings extends Component {
     });
   }
   render() {
-    const { key } = this.state;
+    const { key, user } = this.state;
     return (
       <div className='content account-settings'>
         <div className='settings-left'>
@@ -38,8 +49,8 @@ export default class Settings extends Component {
           </Menu>
         </div>
         <div className='settings-right'>
-          <Basic b_key={key}/>
-          <Resume r_key={key}/>
+          <Basic b_key={key} b_user={user}/>
+          <Resume r_key={key} r_user={user}/>
           <Work w_key={key}/>
           <Project p_key={key}/>
         </div>

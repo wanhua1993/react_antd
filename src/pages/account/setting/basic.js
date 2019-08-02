@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Upload, message } from 'antd';
 import { getCookie } from '@/utils';
+import { updateUser } from '@/api/login';
+import { getStorage } from '@/utils';
 import './basic.less';
 
 @Form.create()
@@ -20,8 +22,15 @@ class Basic extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        let data = { ...values, ...this.state }
-        console.log(data);
+        const { _id } = getStorage('user');
+        let data = { ...values, ...this.state };
+        data._id = _id;
+        data.type = 1;
+        updateUser(data).then(res => {
+          if(res.ok === 1) {
+            message.success('修改成功！');
+          }
+        });
       }
     });
   };
@@ -54,15 +63,20 @@ class Basic extends Component {
       wrapperCol: { span: 8 },
     };
     const { getFieldDecorator } = this.props.form;
-    const { b_key } = this.props;
+    let { avatar } = this.state;
+    const { b_key, b_user } = this.props;
+    if(b_user.avatar) {
+      avatar = b_user.avatar;
+    }
     return (
       <div style={{display: b_key === '1' ? 'block' : 'none'}}>
         <p className='basic_title'>基础设置</p>
         <Form layout='vertical' {...formItemLayout} style={{ position: 'relative' }} onSubmit={this.handleSubmit}>
         <Form.Item label="昵称">
             {
-              getFieldDecorator('username', {
-                rules: [{required: true, message: '请输入昵称'}]
+              getFieldDecorator('name', {
+                rules: [{required: true, message: '请输入昵称'}],
+                initialValue: b_user.name
               })(
                 <Input placeholder="请输入昵称" size='large' />
               )
@@ -71,6 +85,7 @@ class Basic extends Component {
           <Form.Item label="邮箱">
             {getFieldDecorator('email', {
               rules: [{ required: true, message: '请输入邮箱!' }],
+              initialValue: b_user.email
             })(
               <Input placeholder="请输入邮箱" size='large' />,
             )}
@@ -78,7 +93,8 @@ class Basic extends Component {
           <Form.Item label='联系电话'>
             {
               getFieldDecorator('phone', {
-                rules: [{required: true, message: '请输入联系电话'}]
+                rules: [{required: true, message: '请输入联系电话'}],
+                initialValue: b_user.phone
               })(
                 <Input placeholder="请输入手机号" size='large' />
               )
@@ -87,7 +103,8 @@ class Basic extends Component {
           <Form.Item label='居住地址'>
             {
               getFieldDecorator('address', {
-                rules: [{required: true, message: '请输入居住地址'}]
+                rules: [{required: true, message: '请输入居住地址'}],
+                initialValue: b_user.address
               })(
                 <Input placeholder="请输入居住地址" size='large' />
               )
@@ -98,7 +115,7 @@ class Basic extends Component {
           </Form.Item>
           <Form.Item label='头像' className='avatar-item'>
             <div className='avatar'>
-              <img src={this.state.avatar} alt="avatar" />
+              <img src={avatar} alt="avatar" style={{borderRadius: '50%'}}/>
             </div>
             <Upload
               name='file'
