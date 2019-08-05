@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Crumb from '@/components/breadCrumb/breadCrumb'; // 面包屑
 import { Icon, Menu, Dropdown } from 'antd';
-import { SETCOLLAPSED } from '@/store/home/action-type';
 import { getStorage } from '@/utils';
+import { SETCOLLAPSED } from '@/store/home/action-type';
 import { withRouter } from 'react-router-dom'
 import './index.less';
 
@@ -11,13 +11,18 @@ import './index.less';
 class Header extends Component {
   state = {
     collapsed: false,
-    user: {}
+    user: {
+      username: 'tomato',
+      avatar: ''
+    }
   };
   componentWillMount() {
     const user = getStorage('user');
-    this.setState({
-      user
-    });
+    if (user) {
+      this.setState({
+        user
+      });
+    }
   }
   onClick = ({ key }) => {
     const { history } = this.props;
@@ -59,7 +64,7 @@ class Header extends Component {
           </a>
         </Dropdown>
         <div className='header-img'>
-          <img src={user.avatar} alt="logo" />
+          <img src={user.avatar ? user.avatar : 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'} alt="logo" />
         </div>
       </div>
     )
@@ -70,7 +75,7 @@ class Header extends Component {
 }
 function mapStateToProps(state) {
   return {
-    collapsed: state.default.collapsed
+    collapsed: state.default.collapsed,
   }
 }
 function mapDispatchToProps(dispatch) {

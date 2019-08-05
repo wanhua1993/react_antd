@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Upload, Icon, message } from 'antd';
 import { getCookie } from '@/utils';
+import url from '@/config/basicApi';
+const api = url.api;
 
 function beforeUpload(file) {
   const isLt2M = file.size / 1024 / 1024 < 5;
@@ -55,7 +57,7 @@ class Avatar extends Component {
         showUploadList={false}
         beforeUpload={beforeUpload}
         name='file'
-        action={'http://localhost:8000/users/upload_avatar'}
+        action={api + '/users/upload_avatar'}
         headers={
           { token: getCookie('token') }
         }

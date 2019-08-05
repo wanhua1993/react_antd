@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import { Form, Input, Button, Upload, message } from 'antd';
 import { getCookie } from '@/utils';
 import { updateUser } from '@/api/login';
-import { getStorage } from '@/utils';
+import url from '@/config/basicApi';
+import { getStorage, setStorage } from '@/utils';
 import './basic.less';
+
+const api = url.api;
 
 @Form.create()
 class Basic extends Component {
@@ -15,19 +18,25 @@ class Basic extends Component {
     }
     this.uploadAvatar = this.uploadAvatar.bind(this);
   }
-  componentDidMount() {
-
+  componentWillMount() {
+    const { avatar } = getStorage('user');
+    if (avatar) {
+      this.setState({
+        avatar
+      });
+    }
   }
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const { _id } = getStorage('user');
-        let data = { ...values, ...this.state };
-        data._id = _id;
+        const user = getStorage('user');
+        let data = { ...user, ...values, ...this.state };
+        setStorage('user', data);
+        data._id = user._id;
         data.type = 1;
         updateUser(data).then(res => {
-          if(res.ok === 1) {
+          if (res.ok === 1) {
             message.success('修改成功！');
           }
         });
@@ -65,17 +74,14 @@ class Basic extends Component {
     const { getFieldDecorator } = this.props.form;
     let { avatar } = this.state;
     const { b_key, b_user } = this.props;
-    if(b_user.avatar) {
-      avatar = b_user.avatar;
-    }
     return (
-      <div style={{display: b_key === '1' ? 'block' : 'none'}}>
+      <div style={{ display: b_key === '1' ? 'block' : 'none' }}>
         <p className='basic_title'>基础设置</p>
-        <Form layout='vertical' {...formItemLayout} style={{ position: 'relative' }} onSubmit={this.handleSubmit}>
-        <Form.Item label="昵称">
+        <Form layout='vertical' {...formItemLayout} style={{ position: 'relative' }} onSubmit={this.handleSubmit.bind(this)}>
+          <Form.Item label="昵称">
             {
               getFieldDecorator('name', {
-                rules: [{required: true, message: '请输入昵称'}],
+                rules: [{ required: true, message: '请输入昵称' }],
                 initialValue: b_user.name
               })(
                 <Input placeholder="请输入昵称" size='large' />
@@ -93,7 +99,7 @@ class Basic extends Component {
           <Form.Item label='联系电话'>
             {
               getFieldDecorator('phone', {
-                rules: [{required: true, message: '请输入联系电话'}],
+                rules: [{ required: true, message: '请输入联系电话' }],
                 initialValue: b_user.phone
               })(
                 <Input placeholder="请输入手机号" size='large' />
@@ -103,7 +109,7 @@ class Basic extends Component {
           <Form.Item label='居住地址'>
             {
               getFieldDecorator('address', {
-                rules: [{required: true, message: '请输入居住地址'}],
+                rules: [{ required: true, message: '请输入居住地址' }],
                 initialValue: b_user.address
               })(
                 <Input placeholder="请输入居住地址" size='large' />
@@ -115,11 +121,11 @@ class Basic extends Component {
           </Form.Item>
           <Form.Item label='头像' className='avatar-item'>
             <div className='avatar'>
-              <img src={avatar} alt="avatar" style={{borderRadius: '50%'}}/>
+              <img src={avatar} alt="avatar" style={{ borderRadius: '50%' }} />
             </div>
             <Upload
               name='file'
-              action={'http://localhost:8000/users/upload_avatar'}
+              action={api + '/users/upload_avatar'}
               headers={
                 { token: getCookie('token') }
               }

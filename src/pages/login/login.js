@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Form, Icon, Input, Button } from 'antd';
 import { loginIn } from '@/api/login';
 import { connect } from 'react-redux';
-import { SETTOKEN } from '@/store/home/action-type';
+import { SETTOKEN, SETUSER } from '@/store/home/action-type';
 import { setCookie, setStorage } from '@/utils';
 import './login.less';
 
@@ -18,6 +18,10 @@ function mapDispatchToProps(dispatch) {
     setToken: (token) => dispatch({
       type: SETTOKEN,
       token
+    }),
+    setUser: (user) => dispatch({
+      type: SETUSER,
+      user
     })
   }
 }
@@ -32,7 +36,8 @@ class Login extends Component {
         loginIn(values).then(res => {
           let { code, token, value } = res;
           if(code === '200') {
-            this.props.setToken(token);
+            this.props.setToken(token); // 设置 token
+            this.props.setUser(value); // 存储 user 信息到 store 中
             this.props.history.push('/home');
             setCookie('token', token);
             setStorage('user', value);

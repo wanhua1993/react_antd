@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Icon, message } from 'antd';
-import { getStorage } from '@/utils';
+import { getStorage, setStorage } from '@/utils';
 import { updateUser } from '@/api/login';
 import './basic.less';
 
@@ -36,9 +36,10 @@ class Resume extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const { _id } = getStorage('user');
-        let data = { ...values, ...this.state };
-        data._id = _id;
+        const user = getStorage('user');
+        let data = { ...user, ...values, ...this.state };
+        setStorage('user', data);
+        data._id = user._id;
         data.type = 2;
         updateUser(data).then(res => {
           if (res.ok === 1) {
@@ -115,7 +116,7 @@ class Resume extends Component {
     return (
       <div style={{ display: r_key === '2' ? 'block' : 'none' }}>
         <p className='basic_title'>个人简历</p>
-        <Form layout='vertical' {...formItemLayout} onSubmit={this.handleSubmit}>
+        <Form layout='vertical' {...formItemLayout} onSubmit={this.handleSubmit.bind(this)}>
           <Form.Item label="职位">
             {
               getFieldDecorator('position', {
