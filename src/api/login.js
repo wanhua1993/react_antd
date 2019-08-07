@@ -87,7 +87,7 @@ export function deleteOneProject(data) {
     url: `${api}/users/delete_one_project`,
     method: 'POST',
     data
-  }); 
+  });
 }
 
 // 新建工作
@@ -136,5 +136,50 @@ export function deleteOneWork(data) {
     url: `${api}/users/delete_one_work`,
     method: 'POST',
     data
-  }); 
+  });
+}
+
+// 新建菜单权限
+export function addNewAuth(data) {
+  return request({
+    url: `${api}/users/add_new_auth`,
+    method: 'POST',
+    data
+  });
+}
+
+// 分页加载菜单列表
+
+export function authList(data) {
+  return request({
+    url: `${api}/users/auth_list`,
+    method: 'POST',
+    data
+  });
+}
+
+// 查找所有的父集菜单
+export function getFaMenu(data) {
+  return request({
+    url: `${api}/users/get_fa_menu`,
+    method: 'POST',
+    data
+  });
+}
+// 修改菜单
+export function updateOneAuth(data) {
+  return request({
+    url: `${api}/users/update_one_auth`,
+    method: 'POST',
+    data
+  });
+}
+
+// 删除菜单
+export function deleteOneAuth(data) {
+  return request({
+    url: `${api}/users/delete_one_auth`,
+    method: 'POST',
+    data
+  });
 }

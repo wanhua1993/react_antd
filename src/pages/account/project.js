@@ -3,7 +3,7 @@ import { Table, Divider, Button, Modal, message, } from 'antd';
 import { projectList, deleteOneProject } from '@/api/login';
 import { paginationConfig } from '@/config/paginationConfig';
 import { getStorage } from '@/utils';
-import { getDate_0 } from '@/utils/tools'
+import { getDate_0 } from '@/utils/tools';
 import './index.less';
 
 const { confirm } = Modal;
