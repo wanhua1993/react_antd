@@ -1,36 +1,13 @@
 import React, { Component } from 'react';
 import { Table, Divider, Button, Modal, Form, Input, Switch, message, Tree } from 'antd';
-import { addNewAuth, authList, getFaMenu, updateOneAuth, deleteOneAuth } from '@/api/login';
+import { addNewRole, roleList, updateOneRole, deleteOneRole, getMenuTreeList } from '@/api/login';
 import { paginationConfig } from '@/config/paginationConfig';
 import { getDate_0 } from '@/utils/tools';
 import './index.less';
 
 const { confirm } = Modal;
 const { TreeNode } = Tree;
-const treeData = [
-  {
-    title: '系统管理',
-    key: '/system',
-    children: [
-      { title: '用户管理', key: '/system/user' },
-      { title: '角色管理', key: '/system/role' },
-      { title: '权限管理', key: '/system/auth' }
-    ],
-  },
-  {
-    title: '版本管理',
-    key: '/version',
-    children: [
-      { title: '版本列表', key: '/version/list' },
-      { title: '版本发布', key: '/version/upload' },
-      { title: 'API管理', key: '/version/api' },
-    ],
-  },
-  {
-    title: '首页',
-    key: '/home',
-  },
-];
+
 @Form.create()
 class Role extends Component {
   state = {
@@ -39,22 +16,23 @@ class Role extends Component {
     visible: false,
     confirmLoading: false,
     data: [],
+    tree_data: [],
     _id: '',
     total: 0,
     type: true, // true 新建 false 修改
 
     name: '', // 角色名称
-    status: 0, // 0 禁用 1 启用
+    status: true, // false 禁用 true 启用
 
-    expandedKeys: ['/system'], // 展开指定的节点树 ---- key 数组
+    expandedKeys: [], // 展开指定的节点树 ---- key 数组
     autoExpandParent: true, // 是否自动展开父节点
-    checkedKeys: ['/system'], // （受控）选中复选框的树节点（注意：父子节点有关联，如果传入父节点 key，则子节点自动选中；相应当子节点 key 都传入，父节点也自动选中。当设置checkable和checkStrictly，它是一个有checked和halfChecked属性的对象，并且父子节点的选中与否不再关联
+    checkedKeys: [], // （受控）选中复选框的树节点（注意：父子节点有关联，如果传入父节点 key，则子节点自动选中；相应当子节点 key 都传入，父节点也自动选中。当设置checkable和checkStrictly，它是一个有checked和halfChecked属性的对象，并且父子节点的选中与否不再关联
     selectedKeys: [], // （受控）设置选中的树节点  这是选中加了颜色的
   }
   columns = [
     { title: '角色名称', dataIndex: 'name', key: 'name' },
     { title: '创建时间', dataIndex: 'createdAt', key: 'createdAt' },
-    { title: '状态', dataIndex: 'status', key: 'status' },
+    { title: '状态', dataIndex: 'if_status', key: 'if_status' },
     { title: '最后修改时间', dataIndex: 'updatedAt', key: 'updatedAt' },
     {
       title: '操作',
@@ -62,13 +40,6 @@ class Role extends Component {
       key: 'x',
       render: (text, record) =>
         <span>
-          <Button
-            type="primary"
-            onClick={() => this.handleUpdateAuth(record)}
-          >
-            配置
-            </Button>
-          <Divider type="vertical" />
           <Button
             type="primary"
             onClick={() => this.handleUpdateData(record)}
@@ -88,7 +59,6 @@ class Role extends Component {
   ]
 
   onExpand = expandedKeys => {
-    console.log('onExpand', expandedKeys);
     this.setState({
       expandedKeys,
       autoExpandParent: false,
@@ -96,12 +66,10 @@ class Role extends Component {
   };
 
   onCheck = checkedKeys => {
-    console.log('onCheck', checkedKeys);
     this.setState({ checkedKeys });
   };
 
   onSelect = (selectedKeys, info) => {
-    console.log('onSelect', info);
     this.setState({ selectedKeys });
   };
 
@@ -117,18 +85,20 @@ class Role extends Component {
       return <TreeNode {...item} />;
     });
   componentWillMount() {
-    this.load_auth_list();
+    this.load_role_list();
+    this.get_menu_tree();
   }
   // 加载菜单 列表
-  load_auth_list() {
+  load_role_list() {
     let data = {
       pageNum: this.state.pageNum,
       pageSize: this.state.pageSize
     }
-    authList(data).then(res => {
+    roleList(data).then(res => {
       res.data.map((item, index) => {
         item.createdAt = getDate_0(item.createdAt, 'year');
-        item.fa_menu = item.f_id !== '0' ? item.fId.name : '';
+        item.updatedAt = getDate_0(item.updatedAt, 'year');
+        item.if_status = item.status ? '启用中' : '禁用中';
         return item.key = index;
       })
       this.setState({
@@ -137,63 +107,65 @@ class Role extends Component {
       });
     });
   }
-  // 加载父集菜单
-  load_fu_list() {
-    const { level } = this.state;
-    getFaMenu({ level }).then(res => {
-      this.setState({
-        fa_data: res
-      });
-    });
-  }
   // 显示 modal
   showModal = () => {
-    this.load_fu_list();
     this.setState({
       visible: true,
       type: true
     });
   };
-  // 配置权限按钮
-  handleUpdateAuth(record) {
-    console.log(record);
+  // 获取 menu tree
+  get_menu_tree() {
+    getMenuTreeList().then(res => {
+      let tree_data = this.be_tree(res);
+      this.setState({
+        tree_data
+      });
+    });
   }
+  be_tree(data) {
+    data.map(item => {
+      item.title = item.name;
+      item.key = item._id;
+      if (item.children && item.children.length) {
+        this.be_tree(item.children);
+      }
+      return true;
+    });
+    return data
+  }
+
   // 修改按钮
   handleUpdateData(record) {
     // 修改
-    const { level, name, path, icon, fId, _id } = record;
+    const { status, name, checkedKeys, _id } = record;
     const { setFieldsValue } = this.props.form;
     this.setState({
       visible: true,
       type: false,
-      level,
+      status,
+      checkedKeys,
       _id
     });
 
     setFieldsValue({
       name,
-      path,
-      fId: fId ? fId._id : 0,
-      icon
     });
-    this.load_fu_list();
   }
   // 删除 按钮 
   handleDeleteData(record) {
     // 删除
     confirm({
       title: '提示',
-      content: '确认要删除该权限吗？',
+      content: '确认要删除该角色吗？',
       okText: '确认',
       okType: '警告',
       cancelText: '取消',
       onOk: () => {
-        console.log(record);
-        deleteOneAuth({ _id: record._id }).then(res => {
-          console.log(res);
+        deleteOneRole({ _id: record._id }).then(res => {
           if (res.ok === 1) {
             message.success('删除成功');
-            this.load_auth_list();
+            this.load_role_list();
           } else {
             message.error('删除失败');
           }
@@ -209,7 +181,7 @@ class Role extends Component {
       pageNum,
       pageSize
     }, () => {
-      this.load_auth_list();
+      this.load_role_list();
     });
   }
 
@@ -218,31 +190,32 @@ class Role extends Component {
       pageNum,
       pageSize
     }, () => {
-      this.load_auth_list();
+      this.load_role_list();
     });
   }
   // 新建菜单 确认按钮
   handleOk = (e) => {
     e.preventDefault();
     const { validateFields } = this.props.form;
+    const { status, checkedKeys } = this.state;
     validateFields((err, values) => {
       if (!err) {
-        const data = { ...values, level: this.state.level };
-        data.f_id = this.state.fId;
+        const data = { ...values, status, checkedKeys };
+
         const { type } = this.state;
         if (type) {
-          this.newAddAuth(data);
+          this.newAddRole(data);
         } else {
-          this.updateAuth(data);
+          this.updateRole(data);
         }
       }
     });
   };
-  newAddAuth(data) {
+  newAddRole(data) {
     const { setFieldsValue } = this.props.form;
-    addNewAuth(data).then(res => {
+    addNewRole(data).then(res => {
       if (res.code === 200) {
-        message.success('新建菜单成功');
+        message.success('新建角色成功');
         this.setState({
           confirmLoading: true,
         });
@@ -250,28 +223,25 @@ class Role extends Component {
           this.setState({
             visible: false,
             confirmLoading: false,
-            level: 0,
-            fId: 0
+            status: true,
+            checkedKeys: []
           });
-          this.load_auth_list();
+          this.load_role_list();
           setFieldsValue({
             name: '',
-            path: '',
-            fId: 0,
-            icon: ''
           });
         }, 2000);
       } else {
-        message.error('新建菜单失败');
+        message.error('新建角色失败');
       }
     });
   }
-  updateAuth(data) {
+  updateRole(data) {
     const { setFieldsValue } = this.props.form;
     data._id = this.state._id;
-    updateOneAuth(data).then(res => {
+    updateOneRole(data).then(res => {
       if (res.code === 200) {
-        message.success('修改菜单成功');
+        message.success('修改角色成功');
         this.setState({
           confirmLoading: true,
         });
@@ -279,25 +249,29 @@ class Role extends Component {
           this.setState({
             visible: false,
             confirmLoading: false,
-            level: 0,
-            fId: 0
+            status: true,
+            checkedKeys: []
           });
-          this.load_auth_list();
+          this.load_role_list();
           setFieldsValue({
             name: '',
-            path: '',
-            fId: 0,
-            icon: ''
           });
         }, 2000);
       } else {
-        message.error('修改菜单失败');
+        message.error('修改角色失败');
       }
     });
   }
   handleCancel = () => {
+    const { setFieldsValue } = this.props.form;
     this.setState({
       visible: false,
+      confirmLoading: false,
+      status: true,
+      checkedKeys: []
+    });
+    setFieldsValue({
+      name: '',
     });
   };
   handleChangeName = (e) => {
@@ -305,11 +279,13 @@ class Role extends Component {
       name: e.target.value
     });
   }
-  handleChangeStatus = (value) => {
-    console.log(value)
+  handleChangeStatus = (status) => {
+    this.setState({
+      status
+    })
   }
   render() {
-    const { visible, confirmLoading, name, status, type } = this.state;
+    const { visible, confirmLoading, name, status, type, tree_data } = this.state;
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: { span: 4 },
@@ -345,7 +321,7 @@ class Role extends Component {
                 )}
               </Form.Item>
               <Form.Item label="状态">
-                <Switch defaultChecked onChange={this.handleChangeStatus.bind(this)} />
+                <Switch checked={status} onChange={this.handleChangeStatus.bind(this)}/>
               </Form.Item>
               <Form.Item label='菜单权限'>
                 <Tree
@@ -358,7 +334,7 @@ class Role extends Component {
                   onSelect={this.onSelect}
                   selectedKeys={this.state.selectedKeys}
                 >
-                  {this.renderTreeNodes(treeData)}
+                  {this.renderTreeNodes(tree_data)}
                 </Tree>
               </Form.Item>
             </Form>

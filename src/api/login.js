@@ -183,3 +183,87 @@ export function deleteOneAuth(data) {
     data
   });
 }
+
+// 查询菜单树 列表
+export function getMenuTreeList() {
+  return request({
+    url: `${api}/users/get_menu_tree_list`,
+    method: 'POST'
+  });
+}
+// 新建角色
+export function addNewRole(data) {
+  return request({
+    url: `${api}/users/add_role`,
+    method: 'POST',
+    data
+  });
+}
+
+// 查询 角色 列表
+export function roleList(data) {
+  return request({
+    url: `${api}/users/load_role`,
+    method: 'POST',
+    data
+  });
+}
+// 查询 角色 所有 
+export function roleListAll(data) {
+  return request({
+    url: `${api}/users/load_role_all`,
+    method: 'POST',
+    data
+  });
+}
+// 修改 某一个 角色 信息
+export function updateOneRole(data) {
+  return request({
+    url: `${api}/users/update_role`,
+    method: 'POST',
+    data
+  });
+}
+
+// 删除 某一个 角色
+export function deleteOneRole(data) {
+  return request({
+    url: `${api}/users/delete_role`,
+    method: 'POST',
+    data
+  });
+}
+
+// 新建 用户
+export function addNewUser(data) {
+  return request({
+    url: `${api}/users/add_user`,
+    method: 'POST',
+    data
+  });
+}
+
+// 用户列表
+export function userList(data) {
+  return request({
+    url: `${api}/users/load_user`,
+    method: 'POST',
+    data
+  });
+}
+// 修改某一个用户
+export function updateOneUser(data) {
+  return request({
+    url: `${api}/users/update_user`,
+    method: 'POST',
+    data
+  });
+}
+// 删除某一个用户
+export function deleteOneUser(data) {
+  return request({
+    url: `${api}/users/delete_user`,
+    method: 'POST',
+    data
+  });
+}
