@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Crumb from '@/components/breadCrumb/breadCrumb'; // 面包屑
 import { Icon, Menu, Dropdown } from 'antd';
-import { getStorage } from '@/utils';
+import { getStorage, setStorage } from '@/utils';
 import { SETCOLLAPSED } from '@/store/home/action-type';
 import { withRouter } from 'react-router-dom'
 import './index.less';
@@ -35,6 +35,8 @@ class Header extends Component {
     if (key === '3') {
       history.push('/login');
       // 需要将 token storage 中数据清除
+      setStorage('user', null);
+      setStorage('menus', null);
     }
   }
   menuList() {

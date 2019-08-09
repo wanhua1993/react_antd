@@ -68,6 +68,7 @@ class Auth extends Component {
       pageSize: this.state.pageSize
     }
     authList(data).then(res => {
+      console.log(res);
       res.data.map((item, index) => {
         item.createdAt = getDate_0(item.createdAt, 'year');
         item.fa_menu = item.f_id !== '0' ? item.fId.name : '';
@@ -126,9 +127,7 @@ class Auth extends Component {
       okType: '警告',
       cancelText: '取消',
       onOk: () => {
-        console.log(record);
         deleteOneAuth({ _id: record._id }).then(res => {
-          console.log(res);
           if (res.ok === 1) {
             message.success('删除成功');
             this.load_auth_list();

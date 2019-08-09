@@ -3,7 +3,8 @@ import { Link, withRouter } from 'react-router-dom';
 import './index.less';
 import logo from '../../assets/images/logo.png';
 import { Menu, Icon } from 'antd';
-import menuList from '../../config/menuConfig';
+// import menuList from '../../config/menuConfig';
+import { getStorage } from '@/utils';
 import { connect } from 'react-redux';
 const SubMenu = Menu.SubMenu;
 
@@ -86,7 +87,8 @@ class LeftNav extends Component {
   }
 
   componentWillMount() {
-    this.menuNodes = this.getMenuNodes(menuList);
+    let menus = getStorage('menus');
+    this.menuNodes = this.getMenuNodes(menus);
   }
 
   if_collapse(collapsed) {

@@ -185,10 +185,11 @@ export function deleteOneAuth(data) {
 }
 
 // 查询菜单树 列表
-export function getMenuTreeList() {
+export function getMenuTreeList(data) {
   return request({
     url: `${api}/users/get_menu_tree_list`,
-    method: 'POST'
+    method: 'POST',
+    data
   });
 }
 // 新建角色

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Icon, Input, Button } from 'antd';
-import { loginIn } from '@/api/login';
+import { loginIn, getMenuTreeList } from '@/api/login';
 import { connect } from 'react-redux';
 import { SETTOKEN, SETUSER } from '@/store/home/action-type';
 import { setCookie, setStorage } from '@/utils';
@@ -28,25 +28,41 @@ function mapDispatchToProps(dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create()
 class Login extends Component {
-  
+
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         loginIn(values).then(res => {
           let { code, token, value } = res;
-          if(code === '200') {
+          if (code === '200') {
             this.props.setToken(token); // 设置 token
             this.props.setUser(value); // 存储 user 信息到 store 中
-            this.props.history.push('/home');
             setCookie('token', token);
             setStorage('user', value);
+            // 登录以后获取 菜单 根据权限来
+            let { checkedKeys } = value.role_id;
+            getMenuTreeList({ checkedKeys }).then(res => {
+              let menus = this.be_tree(res);
+              setStorage('menus', menus);
+              this.props.history.push('/home');
+            });
           }
         })
       }
     });
   };
-
+  be_tree(data) {
+    data.map(item => {
+      item.title = item.name;
+      item.key = item.path;
+      if (item.children && item.children.length) {
+        this.be_tree(item.children);
+      }
+      return true;
+    });
+    return data
+  }
   render() {
     // form 对象
     const { getFieldDecorator } = this.props.form;
