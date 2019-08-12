@@ -31,6 +31,7 @@ class User extends Component {
     { title: '所属角色', dataIndex: 'role', key: 'key' },
     { title: '手机号', dataIndex: 'phone', key: 'phone' },
     { title: '邮箱', dataIndex: 'email', key: 'email' },
+    { title: '最近登录时间', dataIndex: 'loginAt', key: 'loginAt'},
     {
       title: '操作',
       dataIndex: '',
@@ -74,6 +75,7 @@ class User extends Component {
     userList(data).then(res => {
       res.data.map((item, index) => {
         item.createdAt = getDate_0(item.createdAt, 'year');
+        item.loginAt = getDate_0(item.loginAt, 'year');
         if (item.role_id) {
           item.role = item.role_id.name;
         }

@@ -88,6 +88,7 @@ class LeftNav extends Component {
 
   componentWillMount() {
     let menus = getStorage('menus');
+    menus = menus || [];
     this.menuNodes = this.getMenuNodes(menus);
   }
 

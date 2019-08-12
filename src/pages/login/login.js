@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Icon, Input, Button } from 'antd';
-import { loginIn, getMenuTreeList } from '@/api/login';
+import { loginIn, getMenuTreeList, updateUser } from '@/api/login';
 import { connect } from 'react-redux';
 import { SETTOKEN, SETUSER } from '@/store/home/action-type';
 import { setCookie, setStorage } from '@/utils';
@@ -40,6 +40,7 @@ class Login extends Component {
             this.props.setUser(value); // 存储 user 信息到 store 中
             setCookie('token', token);
             setStorage('user', value);
+            this.updateLoginTime(value._id);
             // 登录以后获取 菜单 根据权限来
             let { checkedKeys } = value.role_id;
             getMenuTreeList({ checkedKeys }).then(res => {
@@ -52,6 +53,17 @@ class Login extends Component {
       }
     });
   };
+  updateLoginTime(_id) {
+    let data = {
+      _id,
+      loginAt: new Date()
+    }
+    updateUser(data).then(res => {
+      if(res.code === 200) {
+        return true;
+      }
+    }); 
+  }
   be_tree(data) {
     data.map(item => {
       item.title = item.name;
