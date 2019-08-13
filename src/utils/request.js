@@ -3,7 +3,7 @@ import { getCookie } from './index';
 import { message } from 'antd';
 
 const service = axios.create({
-  timeout: 3000
+  timeout: 1000 * 60
 });
 
 // 请求拦截
