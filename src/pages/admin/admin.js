@@ -23,6 +23,7 @@ import ArticleEdit from '../project/articleEdit'; //
 import AddProject from '../account/addProject'; // 新增项目
 import Work from '../account/work'; // 工作经历
 import AddWork from '../account/addWork'; //新增工作
+import Resume from '../resume'; // 简历
 
 const { Content, Sider } = Layout;
 
@@ -59,6 +60,7 @@ class Admin extends Component {
               <Route path='/edit/markdown' component={Markdown}></Route>
               <Route path='/version/cloud' component={Cloud}></Route>
               <Route path='/version/export' component={Export}></Route>
+              <Route path='/resume' component={Resume}></Route>
               <Redirect to='/404'></Redirect>
             </Switch>
           </Content>

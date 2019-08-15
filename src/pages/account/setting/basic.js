@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Upload, message } from 'antd';
+import { Form, Input, Button, Upload, message, Radio } from 'antd';
 import { getCookie } from '@/utils';
 import { updateUser } from '@/api/login';
 import url from '@/config/basicApi';
@@ -35,6 +35,7 @@ class Basic extends Component {
         setStorage('user', data);
         data._id = user._id;
         data.type = 1;
+        delete data.loginAt;
         updateUser(data).then(res => {
           if (res.ok === 1) {
             message.success('修改成功！');
@@ -85,6 +86,19 @@ class Basic extends Component {
                 initialValue: b_user.name
               })(
                 <Input placeholder="请输入昵称" size='large' />
+              )
+            }
+          </Form.Item>
+          <Form.Item label="性别">
+            {
+              getFieldDecorator('sex', {
+                rules: [{ required: true, message: '请选择性别' }],
+                initialValue: b_user.sex ? b_user.sex : 0
+              })(
+                <Radio.Group name="sex">
+                  <Radio value={0}>男</Radio>
+                  <Radio value={1}>女</Radio>
+                </Radio.Group>
               )
             }
           </Form.Item>

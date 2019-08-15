@@ -3,6 +3,7 @@ import { Menu } from 'antd';
 import Basic from './setting/basic';
 import Resume from './setting/resume';
 import Work from './setting/work';
+import Eduback from './setting/eduback';
 import Project from './setting/project';
 import { getOneUserInfo } from '@/api/login';
 import { getStorage } from '@/utils';
@@ -43,6 +44,7 @@ export default class Settings extends Component {
             onSelect={this.onSelectMenu.bind(this)}
           >
             <Menu.Item key="1">基本设置</Menu.Item>
+            <Menu.Item key="5">教育背景</Menu.Item>
             <Menu.Item key="2">个人简历</Menu.Item>
             <Menu.Item key="3">工作经历</Menu.Item>
             <Menu.Item key="4">项目经验</Menu.Item>
@@ -53,6 +55,7 @@ export default class Settings extends Component {
           <Resume r_key={key} r_user={user}/>
           <Work w_key={key}/>
           <Project p_key={key}/>
+          <Eduback e_key={key} e_user={user}/>
         </div>
         <div className='clear'></div>
       </div>
