@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Descriptions } from 'antd';
-import { style } from "./model_css";
 import './index.less';
-console.log(style);
 
 export default class Model_one extends Component {
   constructor(props) {
@@ -11,12 +9,32 @@ export default class Model_one extends Component {
   }
   modelTitle(title) {
     return <div>
-      <p style={style.modelonetitle}>{title}</p>
-      <div style={style.modeloneborder}></div>
+      <p className='model-one-title' style={{
+        display: 'inline-block',
+        width: '160px',
+        height: '40px',
+        margin: 0,
+        lineHeight: '40px',
+        background: 'rgb(6, 132, 250)',
+        textAlign: 'center',
+        borderRadius: '28px 18px 18px 0',
+        fontSize: '20px',
+        color: '#fff'
+      }}>{title}</p>
+      <div className='model-one-border' style={{
+        height: '2px',
+        width: '100%',
+        background: 'rgb(6, 132, 250)'
+      }}></div>
     </div>
   }
   ulFlexLi(time, company, position) {
-    return <ul style={style.modeloneback}>
+    return <ul className='model-one-back' style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      fontSize: '16px',
+      color: 'rgb(6, 157, 184)'
+    }}>
       <li>{time}</li>
       <li>{company}</li>
       <li>{position}</li>
@@ -27,14 +45,24 @@ export default class Model_one extends Component {
     return <ul className='model-one-work'>
       {
         work_1.map((item, ind) => (
-          <li key={item.company + ind} style={style.modeloneworkli}>
+          <li key={item.company + ind} className='model-one-work-li' style={{
+            margin: '10px 0',
+            padding: '10px 0',
+            borderBottom: '1px solid rgb(22, 147, 248)'
+          }}>
             {
               this.ulFlexLi(`${item.startTime} ~ ${item.endTime}`, item.company, item.position)
             }
-            <p style={style.modeloneworkdesc}>工作描述: </p>
+            <p className='model-one-work-desc' style={{
+              margin: '10px 0',
+              fontWeight: 600,
+              lineHeight: '30px'
+            }}>工作描述: </p>
             {
               item.workDesc.map((val, index) => (
-                <p key={val + index} style={style.modelonedesclist}>
+                <p key={val + index} className='model-one-desc-list' style={{
+                  margin: '5px 30px'
+                }}>
                   {index + 1}、 {val}
                 </p>
               ))
@@ -49,15 +77,31 @@ export default class Model_one extends Component {
     return <ul className='model-one-work'>
       {
         project_1.map((item, ind) => (
-          <li key={item._id} style={style.modeloneworkli}>
+          <li key={item._id} className='model-one-work-li' style={{
+            margin: '10px 0',
+            padding: '10px 0',
+            borderBottom: '1px solid rgb(22, 147, 248)'
+          }}>
             {
               this.ulFlexLi(item.title, `${item.startTime} ~ ${item.endTime}`, '')
             }
-            <p style={style.modeloneworkdesc}>项目简述: <span style={style.modeloneworkdescspan}> {item.proDesc} </span></p>
-            <p style={style.modeloneworkdesc}>责任描述: </p>
+            <p className='model-one-work-desc' style={{
+              margin: '10px 0',
+              fontWeight: 600,
+              lineHeight: '30px'
+            }}>项目简述: <span style={{
+              fontWeight: 500
+            }}> {item.proDesc} </span></p>
+            <p className='model-one-work-desc' style={{
+              margin: '10px 0',
+              fontWeight: 600,
+              lineHeight: '30px'
+            }}>责任描述: </p>
             {
               item.resDesc.map((val, index) => (
-                <p key={val + index} style={style.modelonedesclist}>
+                <p key={val + index} className='model-one-desc-list' style={{
+                  margin: '5px 30px'
+                }}>
                   {index + 1}、 {val}
                 </p>
               ))
@@ -72,7 +116,9 @@ export default class Model_one extends Component {
     return <ul className='model-one-eval'>
       {
         evaluation.map((item, index) => (
-          <li key={item + index} style={style.modeloneevalli}>
+          <li key={item + index} style={{
+            margin: '5px 0'
+          }}>
             {index + 1}、 {item}
           </li>
         ))
@@ -84,7 +130,9 @@ export default class Model_one extends Component {
     return <ul className='model-one-eval'>
       {
         skills.map((item, index) => (
-          <li key={item + index} style={style.modeloneevalli}>
+          <li key={item + index} style={{
+            margin: '5px 0'
+          }}>
             {index + 1}、 {item}
           </li>
         ))
@@ -95,7 +143,12 @@ export default class Model_one extends Component {
     data = data ? data : [];
     return data.map((item, index) => (
       <div key={index}>
-        <ul style={style.modeloneback}>
+        <ul className='model-one-back' style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          fontSize: '16px',
+          color: 'rgb(6, 157, 184)'
+        }}>
           <li>{item.time[0] + ' ~ ' + item.time[1]}</li>
           <li>{item.school}</li>
           <li>{item.professional}</li>
@@ -119,12 +172,16 @@ export default class Model_one extends Component {
       '2': '半月以内'
     }
     return (
-      <div style={style.modelonecontent} style={{
+      <div className='model-one-content model-content' style={{
         display: model_1 === '1' ? 'block' : 'none',
         padding: '60px'
       }} id={'model-content-1'}>
         {this.modelTitle('基本信息')}
-        <div style={style.modeloneinfo}>
+        <div className='model-one-info' style={{
+          position: 'relative',
+          margin: '15px 0',
+          fontSize: '16px'
+        }}>
           <Descriptions layout="horizontal" column={2}>
             <Descriptions.Item label="姓名">{user_1.name}</Descriptions.Item>
             <Descriptions.Item label="性别">{user_1.sex === '1' ? '女' : '男'}</Descriptions.Item>
@@ -135,12 +192,26 @@ export default class Model_one extends Component {
             <Descriptions.Item label="最高学历">{record[user_1.record]}</Descriptions.Item>
             <Descriptions.Item label="应聘岗位">{user_1.position}</Descriptions.Item>
           </Descriptions>
-          <div style={style.modeloneavatar}>
-            <img src={user_1.avatar} alt="" style={style.img} />
+          <div className='model-one-avatar' style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            width: '130px',
+            height: '160px',
+            background: '#ddd'
+          }}>
+            <img src={user_1.avatar} alt="" style={{
+              width: '100%',
+              height: '100%'
+            }} />
           </div>
         </div>
         {this.modelTitle('求职意向')}
-        <div style={style.modeloneinfo}>
+        <div className='model-one-info' style={{
+          position: 'relative',
+          margin: '15px 0',
+          fontSize: '16px'
+        }}>
           <Descriptions layout="horizontal" column={4}>
             <Descriptions.Item label="岗位">{user_1.position}</Descriptions.Item>
             <Descriptions.Item label="薪资">{user_1.salary}</Descriptions.Item>
@@ -149,37 +220,61 @@ export default class Model_one extends Component {
           </Descriptions>
         </div>
         {this.modelTitle('教育背景')}
-        <div style={style.modeloneinfo}>
+        <div className='model-one-info' style={{
+          position: 'relative',
+          margin: '15px 0',
+          fontSize: '16px'
+        }}>
           {
             this.modelEduBack(user_1.eduBack)
           }
         </div>
         {this.modelTitle('个人能力')}
-        <div style={style.modeloneinfo}>
+        <div className='model-one-info' style={{
+          position: 'relative',
+          margin: '15px 0',
+          fontSize: '16px'
+        }}>
           {
             this.modelSkills(user_1.skills)
           }
         </div>
         {this.modelTitle('工作经历')}
-        <div style={style.modeloneinfo}>
+        <div className='model-one-info' style={{
+          position: 'relative',
+          margin: '15px 0',
+          fontSize: '16px'
+        }}>
           {
             this.modelWork()
           }
         </div>
         {this.modelTitle('项目经验')}
-        <div style={style.modeloneinfo}>
+        <div className='model-one-info' style={{
+          position: 'relative',
+          margin: '15px 0',
+          fontSize: '16px'
+        }}>
           {
             this.modelProject()
           }
         </div>
         {this.modelTitle('自我评价')}
-        <div style={style.modeloneinfo}>
+        <div className='model-one-info' style={{
+          position: 'relative',
+          margin: '15px 0',
+          fontSize: '16px'
+        }}>
           {
             this.modelEval(user_1.evaluation)
           }
         </div>
         {this.modelTitle('兴趣爱好')}
-        <div style={style.modeloneinfo}>
+        <div className='model-one-info' style={{
+          position: 'relative',
+          margin: '15px 0',
+          fontSize: '16px'
+        }}>
           <p>{user_1.hobby}</p>
         </div>
       </div>

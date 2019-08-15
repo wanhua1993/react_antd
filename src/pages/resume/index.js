@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Button } from 'antd';
 import ModelOne from './model_one';
+import { projectListAll, workListAll } from '@/api/login';
+import { getStorage } from '@/utils';
 import './index.less';
 
 export default class Resume extends Component {
@@ -8,25 +10,46 @@ export default class Resume extends Component {
     super(props);
     this.state = {
       model: 0,
+      user: {},
+      workList: [],
+      projectList: []
     }
   }
   componentDidMount() {
     const model = this.props.location.search.split('model=')[1];
+    const user = getStorage('user');
+    projectListAll({ uId: user._id }).then(res => {
+      this.setState({
+        projectList: res
+      })
+    });
+    workListAll({ uId: user._id }).then(res => {
+      this.setState({
+        workList: res
+      })
+    });
     this.setState({
+      user,
       model
     });
   }
-  render() {
+  print() {
     const { model } = this.state;
+
+    window.document.body.innerHTML = window.document.getElementById(`model-content-${model}`).innerHTML; window.print();
+    window.location.reload();
+  }
+  render() {
+    const { model, user, workList, projectList } = this.state;
     return (
       <div className='content resume-wraper'>
         <div className='resume-page'>
           <Button type='primary' size='large'>下载</Button>
-          <Button type='primary' size='large'>打印</Button>
+          <Button type='primary' size='large' onClick={this.print.bind(this)}>打印</Button>
           <Button type='text' size='large'>返回</Button>
         </div>
         <div className='resume-content'>
-          <ModelOne model_1={model} />
+          <ModelOne model_1={model} user_1={user} work_1={workList} project_1={projectList} />
         </div>
       </div>
     )

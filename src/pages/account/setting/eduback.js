@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Icon, message, Select, DatePicker } from 'antd';
+import { Form, Input, Button, Icon, Select, DatePicker, message } from 'antd';
 import { getStorage, setStorage } from '@/utils';
 import { updateUser } from '@/api/login';
+import moment from 'moment';
 import './basic.less';
 
-const { TextArea } = Input;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -20,10 +20,10 @@ class Resume extends Component {
 
   shouldComponentUpdate(newProps, newState) {
     const { eduBack } = newProps.e_user;
-    if (eduBack.length || newProps.e_key) {
+    if ((eduBack && eduBack.length) || newProps.e_key) {
       if (this.state.type) {
         this.setState({
-          eduBack,
+          eduBack: eduBack ? eduBack : []
         }, () => {
           this.setState({
             type: false
@@ -39,34 +39,36 @@ class Resume extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log(this.values);
         const user = getStorage('user');
         let data = { ...user, ...values, ...this.state };
         setStorage('user', data);
         data._id = user._id;
-        data.type = 2;
+        data.type = 4;
         delete data.loginAt;
-        // updateUser(data).then(res => {
-        //   if (res.ok === 1) {
-        //     message.success('修改成功！');
-        //   }
-        // });
+        updateUser(data).then(res => {
+          if (res.ok === 1) {
+            message.success('修改成功！');
+          }
+        });
       }
     });
   };
-  handleChangeTime(index, e) {
+  handleChangeTime(index, opts, time) {
     const { eduBack } = this.state;
-    const { value } = e.target;
+    eduBack.map((item, _index) => item.time = _index === index ? time : item.time)
     this.setState({
-      eduBack: eduBack.map((item, _index) => _index === index ? value : item)
+      eduBack
     });
   }
-  handleChangeSchool() {
+  handleChangeInfo(index, key, e) {
+    const { eduBack } = this.state;
+    const { value } = e.target
+    eduBack.map((item, _index) => item[key] = _index === index ? value : item[key])
+    this.setState({
+      eduBack
+    });
+  }
 
-  }
-  handleChnageThings() {
-    
-  }
   remove = index => {
     const { eduBack } = this.state;
     eduBack.splice(index, 1);
@@ -80,6 +82,7 @@ class Resume extends Component {
     eduBack.push({
       time: [],
       school: '',
+      professional: '',
       things: ''
     });
     this.setState({
@@ -98,19 +101,21 @@ class Resume extends Component {
         span: 13, offset: 0
       },
     };
-    return this.state.eduBack.map((k, index) => (
+    return this.state.eduBack.map((item, index) => (
       <Form.Item
         {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
         label={index === 0 ? '教育背景' : ''}
         required={true}
         key={index}
       >
-        <RangePicker style={{ width: '70%', marginRight: 8 }} onChange={this.handleChangeTime.bind(this, index)}/>
+        <RangePicker style={{ width: '70%', marginRight: 8 }} onChange={this.handleChangeTime.bind(this, index)} value={[moment(item.time[0]), moment(item.time[1])]} />
         <br />
-        <Input placeholder='请输入学校' style={{ width: '70%', marginRight: 8, marginBottom: 10, marginTop: 10 }} onChange={this.handleChangeSchool.bind(this, index)}/>
+        <Input placeholder='请输入学校' style={{ width: '70%', marginRight: 8, marginBottom: 10, marginTop: 10 }} onChange={this.handleChangeInfo.bind(this, index, 'schoole')} value={item.school} />
         <br />
-        <Input placeholder='随便你输入什么都好' style={{ width: '70%', marginRight: 8 }} onChange={this.handleChnageThings.bind(this, index)}/>
-        {this.state.evaluation.length > 0 ? (
+        <Input placeholder='请输入专业' style={{ width: '70%', marginRight: 8, marginBottom: 10, marginTop: 10 }} onChange={this.handleChangeInfo.bind(this, index, 'professional')} value={item.professional} />
+        <br />
+        <Input placeholder='随便你输入什么都好' style={{ width: '70%', marginRight: 8 }} onChange={this.handleChangeInfo.bind(this, index, 'things')} value={item.things} />
+        {this.state.eduBack.length > 0 ? (
           <Icon
             className="dynamic-delete-button-edu"
             type="minus-circle-o"

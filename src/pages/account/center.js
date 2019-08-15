@@ -52,7 +52,7 @@ export default class Center extends Component {
   }
   lookAtResume(model) {
     const { history } = this.props;
-    history.push(`/resume?mode=${model}`);
+    history.push(`/resume?model=${model}`);
   }
   resumeList() {
     const { resumeData } = this.state;
@@ -88,7 +88,6 @@ export default class Center extends Component {
             }
           </ul>
         </Card>
-
       </div>
     )
   }
