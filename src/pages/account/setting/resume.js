@@ -22,8 +22,8 @@ class Resume extends Component {
     if (evaluation.length || newProps.r_key || skills.length) {
       if (this.state.type) {
         this.setState({
-          evaluation,
-          skills
+          evaluation: evaluation ? evaluation : [],
+          skills: skills ? skills : []
         }, () => {
           this.setState({
             type: false

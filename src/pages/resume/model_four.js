@@ -3,30 +3,33 @@ import { Descriptions } from 'antd';
 import { style } from "./model_css";
 import './index.less';
 
-export default class Model_one extends Component {
+export default class Model_four extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
   modelTitle(title) {
-    return <div>
-      <p style={style.modelonetitle}>{title}</p>
-      <div style={style.modeloneborder}></div>
+    return <div style={{position: 'relative'}}>
+      <div style={style.modelfourtitle}>
+        {title}
+        <div style={style.modeltriangle}></div>
+      </div>
+      <div style={style.modelborder}></div>
     </div>
   }
   ulFlexLi(time, company, position) {
-    return <ul style={style.modeloneback}>
+    return <ul style={style.modeltwoback}>
       <li>{time}</li>
       <li>{company}</li>
       <li>{position}</li>
     </ul>
   }
   modelWork() {
-    const { work_1 } = this.props;
+    const { work_4 } = this.props;
     return <ul className='model-one-work'>
       {
-        work_1.map((item, ind) => (
-          <li key={item.company + ind} style={style.modeloneworkli}>
+        work_4.map((item, ind) => (
+          <li key={item.company + ind} style={style.modeltwoworkli}>
             {
               this.ulFlexLi(`${item.startTime} ~ ${item.endTime}`, item.company, item.position)
             }
@@ -44,11 +47,11 @@ export default class Model_one extends Component {
     </ul>
   }
   modelProject() {
-    const { project_1 } = this.props;
+    const { project_4 } = this.props;
     return <ul className='model-one-work'>
       {
-        project_1.map((item, ind) => (
-          <li key={item._id} style={style.modeloneworkli}>
+        project_4.map((item, ind) => (
+          <li key={item._id} style={style.modeltwoworkli}>
             {
               this.ulFlexLi(item.title, `${item.startTime} ~ ${item.endTime}`, '')
             }
@@ -94,7 +97,7 @@ export default class Model_one extends Component {
     data = data ? data : [];
     return data.map((item, index) => (
       <div key={index}>
-        <ul style={style.modeloneback}>
+        <ul style={style.modeltwoback}>
           <li>{item.time[0] + ' ~ ' + item.time[1]}</li>
           <li>{item.school}</li>
           <li>{item.professional}</li>
@@ -103,8 +106,9 @@ export default class Model_one extends Component {
       </div>
     ))
   }
+
   render() {
-    const { user_1, model_1 } = this.props;
+    const { user_4, model_4 } = this.props;
     let record = {
       '0': '高中',
       '1': '专科',
@@ -119,44 +123,54 @@ export default class Model_one extends Component {
     }
     return (
       <div style={{
-        display: model_1 === '1' ? 'block' : 'none',
-        padding: '60px'
-      }} id={'model-content-1'}>
-        {this.modelTitle('基本信息')}
+        display: model_4 === '4' ? 'block' : 'none',
+        padding: '60px',
+        overflow: 'hidden'
+      }} id={'model-content-4'}>
         <div style={style.modeloneinfo}>
-          <Descriptions layout="horizontal" column={2}>
-            <Descriptions.Item label="姓名">{user_1.name}</Descriptions.Item>
-            <Descriptions.Item label="性别">{user_1.sex === '1' ? '女' : '男'}</Descriptions.Item>
-            <Descriptions.Item label="年龄">{user_1.year}</Descriptions.Item>
-            <Descriptions.Item label="经验">{user_1.year}年</Descriptions.Item>
-            <Descriptions.Item label="手机">{user_1.phone}</Descriptions.Item>
-            <Descriptions.Item label="邮箱">{user_1.email}</Descriptions.Item>
-            <Descriptions.Item label="最高学历">{record[user_1.record]}</Descriptions.Item>
-            <Descriptions.Item label="应聘岗位">{user_1.position}</Descriptions.Item>
-          </Descriptions>
-          <div style={style.modeloneavatar}>
-            <img src={user_1.avatar} alt="" style={style.img} />
+          <div style={style.modelfourbasicbox}>
+            <div style={style.modelfouravatar}>
+              <img src={user_4.avatar} alt="" style={style.img} />
+            </div>
+            <div style={style.modelfourbasic}>
+              <p style={style.modeltwobasicname}>{user_4.name}</p>
+              <ul style={style.modeltwobasicul}>
+                <li style={style.modeltwobasicli}>{user_4.sex === '1' ? '女' : '男'}</li>
+                <span style={style.modelspan}></span>
+                <li style={style.modeltwobasicli}>{user_4.year}岁</li>
+                <span style={style.modelspan}></span>
+                <li style={style.modeltwobasicli}>{record[user_4.record]}</li>
+                <span style={style.modelspan}></span>
+                <li style={style.modeltwobasicli}>{user_4.phone}</li>
+                <span style={style.modelspan}></span>
+                <li style={style.modeltwobasicli}>{user_4.email}</li>
+                <span style={style.modelspan}></span>
+                <li style={style.modeltwobasicli}>{user_4.position}</li>
+              </ul>
+              <p>{user_4.hobby}</p>
+            </div>
+            <div style={style.clear}></div>
           </div>
         </div>
         {this.modelTitle('求职意向')}
         <div style={style.modeloneinfo}>
           <Descriptions layout="horizontal" column={4}>
-            <Descriptions.Item label="岗位">{user_1.position}</Descriptions.Item>
-            <Descriptions.Item label="薪资">{user_1.salary}</Descriptions.Item>
-            <Descriptions.Item label="地点">{user_1.address}</Descriptions.Item>
-            <Descriptions.Item label="到岗时间">{report[user_1.reportTime]}</Descriptions.Item>
+            <Descriptions.Item label="岗位">{user_4.position}</Descriptions.Item>
+            <Descriptions.Item label="薪资">{user_4.salary}</Descriptions.Item>
+            <Descriptions.Item label="地点">{user_4.address}</Descriptions.Item>
+            <Descriptions.Item label="到岗时间">{report[user_4.reportTime]}</Descriptions.Item>
           </Descriptions>
         </div>
         {this.modelTitle('教育背景')}
         <div style={style.modeloneinfo}>
           {
-            this.modelEduBack(user_1.eduBack)
+            this.modelEduBack(user_4.eduBack)
           }
         </div>
         {this.modelTitle('个人能力')}
         <div style={style.modeloneinfo}>
           {
-            this.modelSkills(user_1.skills)
+            this.modelSkills(user_4.skills)
           }
         </div>
         {this.modelTitle('工作经历')}
@@ -174,12 +188,12 @@ export default class Model_one extends Component {
         {this.modelTitle('自我评价')}
         <div style={style.modeloneinfo}>
           {
-            this.modelEval(user_1.evaluation)
+            this.modelEval(user_4.evaluation)
           }
         </div>
         {this.modelTitle('兴趣爱好')}
         <div style={style.modeloneinfo}>
-          <p>{user_1.hobby}</p>
+          <p>{user_4.hobby}</p>
         </div>
       </div>
     )
