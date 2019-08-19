@@ -54,6 +54,9 @@ export default class Center extends Component {
     const { history } = this.props;
     history.push(`/resume?model=${model}`);
   }
+  print() {
+    alert('功能还未实现哦，请选择查看打印！')
+  }
   resumeList() {
     const { resumeData } = this.state;
     return resumeData.map((item) => (
@@ -62,7 +65,7 @@ export default class Center extends Component {
           <img src={item.url} alt="" className='resume-back-img' />
           <div className='resume-modal'>
             <p className='resume-modal-look' onClick={this.lookAtResume.bind(this, item.model)}>查看</p>
-            <p className='resume-modal-print'>打印</p>
+            <p className='resume-modal-print' onClick={this.print.bind(this)}>打印</p>
           </div>
         </div>
         <p className='resume-desc'>

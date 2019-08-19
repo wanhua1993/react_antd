@@ -1,110 +1,47 @@
 import React, { Component } from 'react';
 import { Descriptions } from 'antd';
-import { style } from "./model_css";
+import { modelWork, modelProject, modelEval, modelSkills, modelEduBack } from './model_common';
+import { styleList } from "./model_css";
 import './index.less';
-
 export default class Model_one extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      model: 'one',
+      color: 'rgb(6, 132, 250)'
+    };
+  }
+  componentWillMount() {
+    const { color, model } = this.state;
+    this.setState(styleList(model, color));
+  }
+  componentWillReceiveProps() {
+    const { color_1 } = this.props;
+    const { model, color } = this.state;
+    if (color_1) {
+      this.setState({
+        color: color_1
+      }, () => {
+        this.setState(styleList(model, color_1));
+      });
+    } else {
+      this.setState(styleList(model, color));
+    }
+  }
+  componentDidMount() {
+    this.props.onRef(this);
   }
   modelTitle(title) {
+    const { modelonetitle, modelTitle, modeloneborder } = this.state;
     return <div>
-      <p style={style.modelonetitle}>{title}</p>
-      <div style={style.modeloneborder}></div>
+      <p style={{ ...modelonetitle, ...modelTitle }}>{title}</p>
+      <div style={modeloneborder}></div>
     </div>
   }
-  ulFlexLi(time, company, position) {
-    return <ul style={style.modeloneback}>
-      <li>{time}</li>
-      <li>{company}</li>
-      <li>{position}</li>
-    </ul>
-  }
-  modelWork() {
-    const { work_1 } = this.props;
-    return <ul className='model-one-work'>
-      {
-        work_1.map((item, ind) => (
-          <li key={item.company + ind} style={style.modeloneworkli}>
-            {
-              this.ulFlexLi(`${item.startTime} ~ ${item.endTime}`, item.company, item.position)
-            }
-            <p style={style.modeloneworkdesc}>工作描述: </p>
-            {
-              item.workDesc.map((val, index) => (
-                <p key={val + index} style={style.modelonedesclist}>
-                  {index + 1}、 {val}
-                </p>
-              ))
-            }
-          </li>
-        ))
-      }
-    </ul>
-  }
-  modelProject() {
-    const { project_1 } = this.props;
-    return <ul className='model-one-work'>
-      {
-        project_1.map((item, ind) => (
-          <li key={item._id} style={style.modeloneworkli}>
-            {
-              this.ulFlexLi(item.title, `${item.startTime} ~ ${item.endTime}`, '')
-            }
-            <p style={style.modeloneworkdesc}>项目简述: <span style={style.modeloneworkdescspan}> {item.proDesc} </span></p>
-            <p style={style.modeloneworkdesc}>责任描述: </p>
-            {
-              item.resDesc.map((val, index) => (
-                <p key={val + index} style={style.modelonedesclist}>
-                  {index + 1}、 {val}
-                </p>
-              ))
-            }
-          </li>
-        ))
-      }
-    </ul>
-  }
-  modelEval(evaluation) {
-    evaluation = evaluation ? evaluation : [];
-    return <ul className='model-one-eval'>
-      {
-        evaluation.map((item, index) => (
-          <li key={item + index} style={style.modeloneevalli}>
-            {index + 1}、 {item}
-          </li>
-        ))
-      }
-    </ul>
-  }
-  modelSkills(skills) {
-    skills = skills ? skills : [];
-    return <ul className='model-one-eval'>
-      {
-        skills.map((item, index) => (
-          <li key={item + index} style={style.modeloneevalli}>
-            {index + 1}、 {item}
-          </li>
-        ))
-      }
-    </ul>
-  }
-  modelEduBack(data) {
-    data = data ? data : [];
-    return data.map((item, index) => (
-      <div key={index}>
-        <ul style={style.modeloneback}>
-          <li>{item.time[0] + ' ~ ' + item.time[1]}</li>
-          <li>{item.school}</li>
-          <li>{item.professional}</li>
-        </ul>
-        <p>{item.things}</p>
-      </div>
-    ))
-  }
+
   render() {
-    const { user_1, model_1 } = this.props;
+    const { user_1, model_1, work_1, project_1 } = this.props;
+    const { modelinfo, modeloneavatar, modelAvatar, img, } = this.state;
     let record = {
       '0': '高中',
       '1': '专科',
@@ -123,7 +60,7 @@ export default class Model_one extends Component {
         padding: '60px'
       }} id={'model-content-1'}>
         {this.modelTitle('基本信息')}
-        <div style={style.modeloneinfo}>
+        <div style={modelinfo}>
           <Descriptions layout="horizontal" column={2}>
             <Descriptions.Item label="姓名">{user_1.name}</Descriptions.Item>
             <Descriptions.Item label="性别">{user_1.sex === '1' ? '女' : '男'}</Descriptions.Item>
@@ -134,12 +71,12 @@ export default class Model_one extends Component {
             <Descriptions.Item label="最高学历">{record[user_1.record]}</Descriptions.Item>
             <Descriptions.Item label="应聘岗位">{user_1.position}</Descriptions.Item>
           </Descriptions>
-          <div style={style.modeloneavatar}>
-            <img src={user_1.avatar} alt="" style={style.img} />
+          <div style={{ ...modeloneavatar, ...modelAvatar }}>
+            <img src={user_1.avatar} alt="" style={img} />
           </div>
         </div>
         {this.modelTitle('求职意向')}
-        <div style={style.modeloneinfo}>
+        <div style={modelinfo}>
           <Descriptions layout="horizontal" column={4}>
             <Descriptions.Item label="岗位">{user_1.position}</Descriptions.Item>
             <Descriptions.Item label="薪资">{user_1.salary}</Descriptions.Item>
@@ -148,37 +85,37 @@ export default class Model_one extends Component {
           </Descriptions>
         </div>
         {this.modelTitle('教育背景')}
-        <div style={style.modeloneinfo}>
+        <div style={modelinfo}>
           {
-            this.modelEduBack(user_1.eduBack)
+            modelEduBack(user_1.eduBack, this.state)
           }
         </div>
         {this.modelTitle('个人能力')}
-        <div style={style.modeloneinfo}>
+        <div style={modelinfo}>
           {
-            this.modelSkills(user_1.skills)
+            modelSkills(user_1.skills, this.state)
           }
         </div>
         {this.modelTitle('工作经历')}
-        <div style={style.modeloneinfo}>
+        <div style={modelinfo}>
           {
-            this.modelWork()
+            modelWork(work_1, this.state)
           }
         </div>
         {this.modelTitle('项目经验')}
-        <div style={style.modeloneinfo}>
+        <div style={modelinfo}>
           {
-            this.modelProject()
+            modelProject(project_1, this.state)
           }
         </div>
         {this.modelTitle('自我评价')}
-        <div style={style.modeloneinfo}>
+        <div style={modelinfo}>
           {
-            this.modelEval(user_1.evaluation)
+            modelEval(user_1.evaluation, this.state)
           }
         </div>
         {this.modelTitle('兴趣爱好')}
-        <div style={style.modeloneinfo}>
+        <div style={modelinfo}>
           <p>{user_1.hobby}</p>
         </div>
       </div>
