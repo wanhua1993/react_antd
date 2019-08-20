@@ -232,3 +232,25 @@ export const objEqual = (obj1, obj2) => {
     /* eslint-disable-next-line */
     else return !keysArr1.some(key => obj1[key] != obj2[key])
 }
+
+// url 转化成 base64
+export const urlToBase64 = (url) => {
+    return new Promise((resolve, reject) => {
+        let image = new Image();
+        image.onload = function () {
+            let canvas = document.createElement('canvas');
+            canvas.width = this.naturalWidth;
+            canvas.height = this.naturalHeight;
+            // 将图片插入画布并开始绘制
+            canvas.getContext('2d').drawImage(image, 0, 0);
+            let result = canvas.toDataURL('image/png')
+            resolve(result);
+        };
+        image.setAttribute("crossOrigin", 'anonymous');
+        image.src = url;
+        // 图片加载失败的错误处理
+        image.onerror = () => {
+            reject('图片流异常');
+        };
+    })
+}

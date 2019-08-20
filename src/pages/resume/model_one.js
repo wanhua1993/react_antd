@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Descriptions } from 'antd';
 import { modelWork, modelProject, modelEval, modelSkills, modelEduBack } from './model_common';
 import { styleList } from "./model_css";
+import { urlToBase64 } from '@/utils/tools';
 import './index.less';
 export default class Model_one extends Component {
   constructor(props) {
@@ -39,9 +40,16 @@ export default class Model_one extends Component {
     </div>
   }
 
+  if_avatar(avatar) {
+    const { img } = this.state;
+    if (avatar) {
+      return <img src={urlToBase64(avatar)} alt="" style={img} />
+    }
+    return ''
+  }
   render() {
     const { user_1, model_1, work_1, project_1 } = this.props;
-    const { modelinfo, modeloneavatar, modelAvatar, img, } = this.state;
+    const { modelinfo, modeloneavatar, modelAvatar, img } = this.state;
     let record = {
       '0': '高中',
       '1': '专科',
