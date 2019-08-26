@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Icon, Input, Button } from 'antd';
+import { Form, Icon, Input, Button, message } from 'antd';
 import { loginIn, getMenuTreeList, updateUser } from '@/api/login';
 import { connect } from 'react-redux';
 import { SETTOKEN, SETUSER } from '@/store/home/action-type';
@@ -48,6 +48,8 @@ class Login extends Component {
               setStorage('menus', menus);
               this.props.history.push('/home');
             });
+          } else {
+            message.warning('登录失败，检查用户名密码是否正确');
           }
         })
       }

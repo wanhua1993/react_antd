@@ -234,23 +234,23 @@ export const objEqual = (obj1, obj2) => {
 }
 
 // url 转化成 base64
-export const urlToBase64 = (url) => {
-    return new Promise((resolve, reject) => {
-        let image = new Image();
+export const getBase64Image = (img, width, height) => {
+    return new Promise((resolve) => {
+        var image = new Image();
+        image.setAttribute('crossOrigin', 'anonymous');
+        image.src = img;
+        var canvas = document.createElement("canvas");
+        canvas.width = width ? width : image.width;
+        canvas.height = height ? height : image.height;
+        var ctx = canvas.getContext("2d");
+        var dataURL = '';
         image.onload = function () {
-            let canvas = document.createElement('canvas');
-            canvas.width = this.naturalWidth;
-            canvas.height = this.naturalHeight;
-            // 将图片插入画布并开始绘制
-            canvas.getContext('2d').drawImage(image, 0, 0);
-            let result = canvas.toDataURL('image/png')
-            resolve(result);
-        };
-        image.setAttribute("crossOrigin", 'anonymous');
-        image.src = url;
-        // 图片加载失败的错误处理
-        image.onerror = () => {
-            reject('图片流异常');
-        };
-    })
+            ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            dataURL = canvas.toDataURL();
+            resolve(dataURL);
+        }
+        image.onerror = function (err) {
+            console.log(err);
+        }
+    });
 }

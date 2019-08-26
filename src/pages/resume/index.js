@@ -79,7 +79,9 @@ export default class Resume extends Component {
   downloadModel() {
     const { model } = this.state;
     let domModel = document.getElementById(`model-content-${model}`)
-    html2canvas(domModel).then((canvas) => {
+    html2canvas(domModel, {
+      scale: 3
+    }).then((canvas) => {
       var contentWidth = canvas.width;
       var contentHeight = canvas.height;
       //一页pdf显示html页面生成的canvas高度;
