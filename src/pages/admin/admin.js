@@ -24,6 +24,8 @@ import AddProject from '../account/addProject'; // 新增项目
 import Work from '../account/work'; // 工作经历
 import AddWork from '../account/addWork'; //新增工作
 import Resume from '../resume'; // 简历
+import Api from '../version/api'; // api 接口
+import AddApi from '../version/addApi'; // 添加修改API接口
 
 const { Content, Sider } = Layout;
 
@@ -34,7 +36,7 @@ class Admin extends Component {
   render() {
     const { collapsed } = this.props;
     return (
-      <Layout style={{ height: '100%' }}>
+      <Layout style={{ height: '100%', overflow: 'hidden' }}>
         <Sider collapsible collapsed={collapsed} width={260}>
           <LeftNav />
         </Sider>
@@ -60,6 +62,8 @@ class Admin extends Component {
               <Route path='/edit/markdown' component={Markdown}></Route>
               <Route path='/version/cloud' component={Cloud}></Route>
               <Route path='/version/export' component={Export}></Route>
+              <Route path='/version/api' component={Api}></Route>
+              <Route path='/version/addApi' component={AddApi}></Route>
               <Route path='/resume' component={Resume}></Route>
               <Redirect to='/404'></Redirect>
             </Switch>
