@@ -26,6 +26,7 @@ import AddWork from '../account/addWork'; //新增工作
 import Resume from '../resume'; // 简历
 import Api from '../version/api'; // api 接口
 import AddApi from '../version/addApi'; // 添加修改API接口
+import Label from '../config/label'; // 标签管理列表
 
 const { Content, Sider } = Layout;
 
@@ -65,6 +66,7 @@ class Admin extends Component {
               <Route path='/version/api' component={Api}></Route>
               <Route path='/version/addApi' component={AddApi}></Route>
               <Route path='/resume' component={Resume}></Route>
+              <Route path='/config/label' component={Label}></Route>
               <Redirect to='/404'></Redirect>
             </Switch>
           </Content>

@@ -1,20 +1,17 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Icon, message } from 'antd';
-import { addProject, getOneProject, updateOneProject } from '@/api/login';
+import { Form, Input, Button, Icon, message, Radio, Select } from 'antd';
+import { addApi, updateOneApi, getOneApi } from '@/api/version';
 import { getStorage } from '@/utils';
-
+import './index.less';
+const { Option } = Select;
 const { TextArea } = Input;
 @Form.create()
 class AddApi extends Component {
   state = {
-    type: [], // 项目类型
-    onlineUrl: '', // 上线地址
-    proUrl: '', // 原型地址
-    startTime: new Date(), // 开始时间
-    endTime: new Date(), // 结束时间
-    resDesc: [],
-    imageUrl: '',
-    _id: ''
+    method: 'GET', // 请求方式
+    options: [], // 参数
+    _id: '',
+    example: '' // 返回示例
   }
 
   componentDidMount() {
@@ -28,23 +25,19 @@ class AddApi extends Component {
   }
 
   getProject(_id) {
-    getOneProject({ _id }).then(res => {
+    getOneApi({ _id }).then(res => {
       const value = res[0];
       this.setState({
-        type: value.type,
-        onlineUrl: value.onlineUrl,
-        proUrl: value.proUrl,
-        startTime: value.startTime,
-        endTime: value.endTime,
-        resDesc: value.resDesc,
-        imageUrl: value.imageUrl
+        method: value.method,
+        options: value.options,
+        example: JSON.stringify(value.example)
       });
       setTimeout(() => {
         this.props.form.setFieldsValue({
-          title: value.title,
-          proDesc: value.proDesc,
+          name: value.name,
+          url: value.url,
         });
-      }, 0)
+      }, 0);
     })
   }
   handleSubmit = e => {
@@ -52,26 +45,27 @@ class AddApi extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         let data = { ...values, ...this.state };
+        data.example = eval("(" + this.state.example + ")")
         const { _id } = getStorage('user');
         data.uId = _id;
-        const p_id = this.state._id;
-        if (p_id) {
+        const app_id = this.state._id;
+        if (app_id) {
           // 修改
-          data._id = p_id;
-          updateOneProject(data).then(res => {
-            if (res.code === '200') {
+          data._id = app_id;
+          updateOneApi(data).then(res => {
+            if (res && res.code === 200) {
               message.success('修改成功！');
-              this.props.history.push('/account/project');
+              this.props.history.push('/version/api');
             } else {
               message.erroe('修改失败！');
             }
           });
         } else {
           // 新建
-          addProject(data).then(res => {
-            if (res.code === '200') {
+          addApi(data).then(res => {
+            if (res && res.code === 200) {
               message.success('添加成功！');
-              this.props.history.push('/account/project');
+              this.props.history.push('/version/api');
             } else {
               message.success('添加失败！');
             }
@@ -81,28 +75,6 @@ class AddApi extends Component {
     });
   };
 
-  handleSelectType(type) {
-    if(!type.includes(1)) {
-      this.setState({
-        onlineUrl: ''
-      });
-    }
-    if(!type.includes(2)) {
-      this.setState({
-        proUrl: ''
-      });
-    }
-    // 选择 类型
-    this.setState({
-      type
-    });
-  }
-  handleChangeTime(opts, time) {
-    this.setState({
-      startTime: time[0],
-      endTime: time[1]
-    });
-  }
   handleChangeName(e) {
     this.setState({
       title: e.target.value
@@ -113,16 +85,7 @@ class AddApi extends Component {
       proDesc: e.target.value
     });
   }
-  handleChangeOnlineUrl(e) {
-    this.setState({
-      onlineUrl: e.target.value
-    });
-  }
-  handleChangeProUrl(e) {
-    this.setState({
-      proUrl: e.target.value
-    });
-  }
+
   handleChangeResDesc(index, e) {
     const { resDesc } = this.state;
     const { value } = e.target;
@@ -131,20 +94,51 @@ class AddApi extends Component {
     });
   }
   remove = index => {
-    const { resDesc } = this.state;
-    resDesc.splice(index, 1);
+    const { options } = this.state;
+    options.splice(index, 1);
     this.setState({
-      resDesc
+      options
     });
   };
 
   add = () => {
-    const { resDesc } = this.state;
-    resDesc.push('');
+    const { options } = this.state;
+    options.push({
+      optName: '',
+      optSelect: '',
+      optType: '',
+      optDesc: ''
+    });
     this.setState({
-      resDesc
+      options
     });
   };
+  handleSelectMethod(e) {
+    const { value } = e.target;
+    this.setState({
+      method: value
+    });
+  }
+  handleChangeOpt(index, key, e) {
+    const { options } = this.state;
+    const { value } = e.target
+    options.map((item, _index) => item[key] = _index === index ? value : item[key])
+    this.setState({
+      options
+    });
+  }
+  handleSelectOpt(index, key, value) {
+    const { options } = this.state;
+    options.map((item, _index) => item[key] = _index === index ? value : item[key])
+    this.setState({
+      options
+    });
+  }
+  handleChangeExample(e) {
+    this.setState({
+      example: e.target.value
+    });
+  }
   formItemFn() {
     const formItemLayout = {
       wrapperCol: {
@@ -156,17 +150,57 @@ class AddApi extends Component {
         span: 15, offset: 7
       },
     };
-    return this.state.resDesc.map((k, index) => (
+    return this.state.options.map((item, index) => (
       <Form.Item
         {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
         label={index === 0 ? '接口参数' : ''}
         required={true}
         key={index}
       >
-        <TextArea placeholder="请输入责任描述" style={{ width: '60%', marginRight: 8 }} rows={2} value={k} onChange={this.handleChangeResDesc.bind(this, index)} />
-        {this.state.resDesc.length > 0 ? (
+        <span>
+          <Input
+            type="text"
+            size='large'
+            value={item.optName}
+            onChange={this.handleChangeOpt.bind(this, index, 'optName')}
+            style={{ width: '20%', margin: '5px' }}
+            placeholder='请输入参数名称'
+          />
+          <Select
+            value={item.optSelect}
+            size='large'
+            style={{ width: '20%', margin: '5px' }}
+            onChange={this.handleSelectOpt.bind(this, index, 'optSelect')}
+            placeholder='请选择是否必选'
+          >
+            <Option value="是">是</Option>
+            <Option value="否">否</Option>
+          </Select>
+          <Select
+            value={item.optType}
+            size='large'
+            style={{ width: '20%', margin: '5px' }}
+            onChange={this.handleSelectOpt.bind(this, index, 'optType')}
+            placeholder='请选择参数类型'
+          >
+            <Option value="String">String</Option>
+            <Option value="Number">Number</Option>
+            <Option value="Boolean">Boolean</Option>
+            <Option value="Array">Array</Option>
+            <Option value="Object">Object</Option>
+          </Select>
+          <Input
+            type="text"
+            size='large'
+            value={item.optDesc}
+            onChange={this.handleChangeOpt.bind(this, index, 'optDesc')}
+            style={{ width: '20%' }}
+            placeholder='请输入参数说明'
+          />
+        </span>
+        {this.state.options.length > 0 ? (
           <Icon
-            className="dynamic-delete-button"
+            className="dynamic-delete-button-opt"
             type="minus-circle-o"
             onClick={() => this.remove(index)}
           />
@@ -174,14 +208,10 @@ class AddApi extends Component {
       </Form.Item>
     ));
   }
-  handleChangeAvatar(imageUrl) {
-    this.setState({
-      imageUrl
-    });
-  }
+
   render() {
     const { getFieldDecorator, getFieldsValue } = this.props.form;
-    // const { type, proUrl, onlineUrl, startTime, endTime } = this.state;
+    const { method, fields, example } = this.state;
     const { name, url } = getFieldsValue();
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
@@ -206,13 +236,22 @@ class AddApi extends Component {
                 <Input size='large' onChange={this.handleChangeUrl.bind(this)} />
               )}
             </Form.Item>
+            <Form.Item label="请求方式">
+              <Radio.Group defaultValue={0} onChange={this.handleSelectMethod.bind(this)} value={method}>
+                <Radio value='GET'>GET</Radio>
+                <Radio value='POST'>POST</Radio>
+              </Radio.Group>
+            </Form.Item>
             {this.formItemFn()}
             <Form.Item {...formItemLayoutWithOutLabel}>
               <Button type="dashed" onClick={this.add} style={{ width: '60%' }} size='large'>
                 <Icon type="plus" /> 添加接口参数
               </Button>
             </Form.Item>
-
+            <Form.Item label="返回示例" >
+              <TextArea placeholder="请输入返回示例" rows={10} value={example} onChange={this.handleChangeExample.bind(this)} />
+              {/* <pre className="language-bash" style={{ background: '#ddd', padding: '5px' }}>{JSON.stringify(fields, null, 1)}</pre> */}
+            </Form.Item>
             <Form.Item wrapperCol={{ span: 12, offset: 7 }}>
               <Button type="primary" htmlType="submit" size='large'>提交</Button>
               <Button type="text" style={{ margin: '0 20px' }} size='large' onClick={() => {

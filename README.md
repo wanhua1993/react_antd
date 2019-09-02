@@ -1,68 +1,55 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 后端管理系统 （react + react-redux + ant）
+### 个人管理
+       个人中心 ---- 选择简历模板打印简历 只要该简历 可以连接电脑 便可以 实现 打印简历功能
+       个人设置
+       简历模板  ----- 列表、新建、修改、删除 制作简历模板 这个 是个难点
+### 项目管理
+        文章管理
+        项目管理
+### 编辑器管理
+        富文本编辑器
+        markdown编辑器
+### 版本发布
+        历史版本管理
+        版本发布
+        API管理  ---- 接口管理
+### 用户管理
+        会员管理
+        会员等级
+        会员权限管理
+### 订单管理
+        订单列表
+### 配置管理
+        标签管理 ---- 增删改查
+### 系统管理
+        用户管理 ---------- 可以增加 最后登录时间
+        角色管理
+        权限管理  
+## PC端 --- 番茄简记  （有必要的话可以做成 自适应移动端  react + react-redux + typescript）
+      登录注册页面
+      文章列表页面
+          文章详情 ---- 点赞 收藏 评论 分享 功能
+          编辑页面 ---- 功能很多 新增 删除 查询 共享 发表 后台审核 草稿等功能 
+      标签管理   ----   一级标签  二级标签（个人关注的标签）
+      会员等级页面
+          会员权限设计
+          购买会员
+          支付页面  ----  支付宝 微信 支付
+      主页面  
+      评论系统设计   -----   评论 回复功能
+      个人用户信息   -----  个人主页 用户名  密码 邮箱  手机号 头像  等 
+      消息系统设计  ----  邮件、用户消息、系统消息、基本聊天功能
+      其他功能待定
+  PC端 所有表 ID 都设置为自增
+  项目中的所有图标使用 阿里 icon
+  可以模仿 掘金 印象 为知 有道云 笔记 结合样式
+        
+## APP端 --- 番茄简记 （react native）（或者小程序端）
 
-## Available Scripts
+后台技术（node + koa + mongodb、mysql）
+    图片上传以后会改为 阿里云OSS 存储 这样不会占用 服务器存储空间
 
-In the project directory, you can run:
+## 项目管理 （git）
 
-### `npm start`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+项目最终要写测试用例，前后端都要写测试用例 最好是覆盖全
+ 

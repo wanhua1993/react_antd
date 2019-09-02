@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Divider, Button, Modal, message, } from 'antd';
-import { projectList, deleteOneProject } from '@/api/login';
+import { apiList, deleteOneApi, updateOneApi } from '@/api/version';
 import { paginationConfig } from '@/config/paginationConfig';
 import { getStorage } from '@/utils';
 import { getDate_0 } from '@/utils/tools';
@@ -8,7 +8,7 @@ import './index.less';
 
 const { confirm } = Modal;
 
-class Project extends Component {
+class Api extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,7 +21,7 @@ class Project extends Component {
     { title: '接口名称', dataIndex: 'name', key: 'name' },
     { title: '请求地址', dataIndex: 'url', key: 'url' },
     { title: '请求方式', dataIndex: 'method', key: 'method' },
-    { title: '接口状态', dataIndex: 'status', key: 'status'},
+    { title: '接口状态', dataIndex: 'apiStatus', key: 'apiStatus' },
     { title: '创建时间', dataIndex: 'createdAt', key: 'createdAt' },
     {
       title: '操作',
@@ -38,10 +38,10 @@ class Project extends Component {
           <Divider type="vertical" />
           <Button
             type="primary"
-            onClick={() => this.handleUpdateData(record)}
+            onClick={() => this.handleUpdateStatus(record)}
           >
-            启用
-            </Button>
+            {record.status ? '停用' : '启用'}
+          </Button>
           <Divider type="vertical" />
           <Button
             type="danger"
@@ -58,6 +58,34 @@ class Project extends Component {
     const { _id } = record;
     this.props.history.push('/version/addApi?_id=' + _id);
   }
+  handleUpdateStatus(record) {
+    const { _id, status } = record;
+    let data = {
+      _id,
+      status: !status
+    }
+    let content = data.status ? '启用' : '停用';
+    confirm({
+      title: '提示',
+      content: `确认要${content}该接口吗？`,
+      okText: '确认',
+      okType: '警告',
+      cancelText: '取消',
+      onOk: () => {
+        updateOneApi(data).then(res => {
+          if (res.code === 200) {
+            message.success(content + '成功！');
+            this.load_api_list();
+          } else {
+            message.error(content + '失败！');
+          }
+        });
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  }
   handleDeleteData(record) {
     // 删除
     confirm({
@@ -71,10 +99,10 @@ class Project extends Component {
         let data = {
           _id
         }
-        deleteOneProject(data).then(res => {
-          if(res.code === '200') {
+        deleteOneApi(data).then(res => {
+          if (res.code === '200') {
             message.success('删除成功！');
-            this.load_project_list();
+            this.load_api_list();
           } else {
             message.error('删除失败！');
           }
@@ -86,18 +114,19 @@ class Project extends Component {
     });
   }
   componentWillMount() {
-    this.load_project_list();
+    this.load_api_list();
   }
-  load_project_list() {
+  load_api_list() {
     const { _id } = getStorage('user');
     let data = {
       uId: _id,
       pageNum: this.state.pageNum,
       pageSize: this.state.pageSize
     }
-    projectList(data).then(res => {
+    apiList(data).then(res => {
       res.data.map((item, index) => {
         item.time = item.startTime + ' 至 ' + item.endTime;
+        item.apiStatus = !item.status ? '已停用' : '启用中';
         item.createdAt = getDate_0(item.createdAt, 'year');
         return item.key = index;
       });
@@ -112,7 +141,7 @@ class Project extends Component {
       pageNum,
       pageSize
     }, () => {
-      this.load_project_list();
+      this.load_api_list();
     });
   }
   onChange(pageNum, pageSize) {
@@ -120,7 +149,7 @@ class Project extends Component {
       pageNum,
       pageSize
     }, () => {
-      this.load_project_list();
+      this.load_api_list();
     });
   }
   render() {
@@ -133,12 +162,13 @@ class Project extends Component {
         <Table
           columns={this.columns}
           dataSource={this.state.data}
+          expandedRowRender={record => <pre style={{ margin: 0 }}>{JSON.stringify(record.example)}</pre>}
           pagination={paginationConfig(this.state.total, this.onChange.bind(this), this.onShowSizeChange.bind(this))}
         />
       </div>
     )
   }
 }
-export default Project;
+export default Api;
 
 
