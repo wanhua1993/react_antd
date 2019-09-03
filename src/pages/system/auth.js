@@ -105,6 +105,7 @@ class Auth extends Component {
       visible: true,
       type: false,
       level,
+      fId: fId ? fId._id : 0,
       _id
     });
 

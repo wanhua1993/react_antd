@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Divider, Button, Modal, Form, Input, Radio, Select, message } from 'antd';
-import { addNewAuth, authList, getFaMenu, updateOneAuth, deleteOneAuth } from '@/api/login';
+import { addLabel, labelList, fa_list_label, updateOneLabel, deleteOneLabel } from '@/api/version';
 import { paginationConfig } from '@/config/paginationConfig';
 import { getDate_0 } from '@/utils/tools';
 import './index.less';
@@ -15,7 +15,7 @@ class Label extends Component {
     pageSize: 5,
     visible: false,
     confirmLoading: false,
-    level: 0, // 菜单等级
+    level: 0, // 标签 等级
     data: [],
     _id: '',
 
@@ -71,10 +71,11 @@ class Label extends Component {
       pageNum: this.state.pageNum,
       pageSize: this.state.pageSize
     }
-    authList(data).then(res => {
+    labelList(data).then(res => {
       res.data.map((item, index) => {
         item.createdAt = getDate_0(item.createdAt, 'year');
-        item.fa_menu = item.f_id !== '0' ? item.fId.name : '';
+        item.fa_label = item.f_id !== '0' ? item.fId.name : '';
+        item.labelStatus = item.status ? '启用中' : '已停用';
         return item.key = index;
       })
       this.setState({
@@ -86,7 +87,7 @@ class Label extends Component {
   // 加载父集菜单
   load_fu_list() {
     const { level } = this.state;
-    getFaMenu({ level }).then(res => {
+    fa_list_label({ level }).then(res => {
       this.setState({
         fa_data: res
       });
@@ -103,20 +104,19 @@ class Label extends Component {
   // 修改按钮
   handleUpdateData(record) {
     // 修改
-    const { level, name, path, icon, fId, _id } = record;
+    const { level, name, fId, _id } = record;
     const { setFieldsValue } = this.props.form;
     this.setState({
       visible: true,
       type: false,
       level,
+      fId: fId ? fId._id : 0,
       _id
     });
 
     setFieldsValue({
       name,
-      path,
       fId: fId ? fId._id : 0,
-      icon
     });
     this.load_fu_list();
   }
@@ -130,7 +130,7 @@ class Label extends Component {
       okType: '警告',
       cancelText: '取消',
       onOk: () => {
-        deleteOneAuth({ _id: record._id }).then(res => {
+        deleteOneLabel({ _id: record._id }).then(res => {
           if (res.ok === 1) {
             message.success('删除成功');
             this.load_label_list();
@@ -170,18 +170,17 @@ class Label extends Component {
         const data = { ...values, level: this.state.level };
         data.f_id = this.state.fId;
         const { type } = this.state;
-        console.log(data);
         if (type) {
-          this.newAddAuth(data);
+          this.newAddLabel(data);
         } else {
-          this.updateAuth(data);
+          this.updateLabel(data);
         }
       }
     });
   };
-  newAddAuth(data) {
+  newAddLabel(data) {
     const { setFieldsValue } = this.props.form;
-    addNewAuth(data).then(res => {
+    addLabel(data).then(res => {
       if (res.code === 200) {
         message.success('新建标签成功');
         this.setState({
@@ -197,9 +196,7 @@ class Label extends Component {
           this.load_label_list();
           setFieldsValue({
             name: '',
-            path: '',
             fId: 0,
-            icon: ''
           });
         }, 2000);
       } else {
@@ -207,10 +204,10 @@ class Label extends Component {
       }
     });
   }
-  updateAuth(data) {
+  updateLabel(data) {
     const { setFieldsValue } = this.props.form;
     data._id = this.state._id;
-    updateOneAuth(data).then(res => {
+    updateOneLabel(data).then(res => {
       if (res.code === 200) {
         message.success('修改标签成功');
         this.setState({
@@ -226,9 +223,7 @@ class Label extends Component {
           this.load_label_list();
           setFieldsValue({
             name: '',
-            path: '',
             fId: 0,
-            icon: ''
           });
         }, 2000);
       } else {

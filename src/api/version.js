@@ -51,3 +51,43 @@ export function getOneApi(data) {
     data
   });
 }
+// 新建 一个标签
+export function addLabel(data) {
+  return request({
+    url: `${api}/version/addLabel`,
+    method: 'POST',
+    data
+  });
+}
+// 修改 一个标签
+export function updateOneLabel(data) {
+  return request({
+    url: `${api}/version/updateOneLabel`,
+    method: 'POST',
+    data
+  });
+}
+// 标签列表
+export function labelList(data) {
+  return request({
+    url: `${api}/version/loadLabel`,
+    method: 'POST',
+    data
+  });
+}
+// 删除一个标签
+export function deleteOneLabel(data) {
+  return request({
+    url: `${api}/version/deleteOneLabel`,
+    method: 'POST',
+    data
+  });
+}
+// 获取所有的父级标签
+export function fa_list_label(data) {
+  return request({
+    url: `${api}/version/fa_list_label`,
+    method: 'POST',
+    data
+  });
+}
