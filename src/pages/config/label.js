@@ -46,7 +46,7 @@ class Label extends Component {
           <Divider type="vertical" />
           <Button
             type="primary"
-            onClick={() => this.handleUpdateData(record)}
+            onClick={() => this.handleUpdateStatus(record)}
           >
             启用
             </Button>
@@ -119,6 +119,34 @@ class Label extends Component {
       fId: fId ? fId._id : 0,
     });
     this.load_fu_list();
+  }
+  handleUpdateStatus(record) {
+    const { _id, status } = record;
+    let data = {
+      _id,
+      status: !status
+    }
+    let content = data.status ? '启用' : '停用';
+    confirm({
+      title: '提示',
+      content: `确认要${content}该接口吗？`,
+      okText: '确认',
+      okType: '警告',
+      cancelText: '取消',
+      onOk: () => {
+        updateOneLabel(data).then(res => {
+          if (res.code === 200) {
+            message.success(content + '成功！');
+            this.load_label_list();
+          } else {
+            message.error(content + '失败！');
+          }
+        });
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   }
   // 删除 按钮 
   handleDeleteData(record) {
@@ -242,7 +270,7 @@ class Label extends Component {
       name: e.target.value
     });
   }
-  
+
   handleSelectLevel = (e) => {
     this.setState({
       level: e.target.value
