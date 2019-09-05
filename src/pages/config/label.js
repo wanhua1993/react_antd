@@ -18,7 +18,6 @@ class Label extends Component {
     level: 0, // 标签 等级
     data: [],
     _id: '',
-
     fa_data: [], // 父级 标签 list
     total: 0,
     type: true, // true 新建 false 修改
@@ -61,7 +60,6 @@ class Label extends Component {
       ,
     },
   ]
-
   componentWillMount() {
     this.load_label_list();
   }
