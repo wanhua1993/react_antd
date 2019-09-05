@@ -268,7 +268,6 @@ class Label extends Component {
       name: e.target.value
     });
   }
-
   handleSelectLevel = (e) => {
     this.setState({
       level: e.target.value
