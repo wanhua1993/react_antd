@@ -10,7 +10,7 @@
     "draft-js": "^0.11.0",
     "draftjs-to-html": "^0.8.4",
     "for-editor": "^0.3.0",
-    "highlight.js": "^9.15.8",
+    "highlight.js": "^10.4.1",
     "html-to-draftjs": "^1.4.0",
     "html2canvas": "^1.0.0-rc.3",
     "jspdf": "^1.5.3",
