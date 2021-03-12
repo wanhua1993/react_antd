@@ -13,7 +13,7 @@
     "highlight.js": "^9.15.8",
     "html-to-draftjs": "^1.4.0",
     "html2canvas": "^1.0.0-rc.3",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.3.1",
     "markdown-it": "^9.0.1",
     "markdown-it-abbr": "^1.0.4",
     "markdown-it-deflist": "^2.0.3",
